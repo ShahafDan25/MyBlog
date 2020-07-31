@@ -349,35 +349,41 @@ header {
     position: absolute;
     z-index: -1;
     text-align: right;
-    display: inline-block;
+    width: 20%;
 }
 .add-blog-container form .inputfile-container input[type=file] + label {
     flex: 5;
-    font-size: 80%;
+    font-size: 100%;
     font-weight: 700;
     color: black;
     background-color: rgb(108, 255, 177);
     display: inline-block;
     cursor: pointer;
-    padding: 1% 5% 1% 5%;
+    padding: 4%;
     margin: 0% 1% 0% 1%;
     box-sizing: border-box;
     font-family: "Gill Sans";
     border-radius: 4px;
     display: inline-block;
+    width: 20%;
 }
 .add-blog-container form .inputfile-container input[type=file]:focus + label, .add-blog-container form .inputfile-container input[type=file] + label:hover {
     background-color: rgb(69, 221, 140);
+}
+.add-blog-container form .inputfile-container {
+    display: inline-flex;
+    width: 25%;
 }
 .add-blog-container form .inputfile-container .cancelFile {
     color: #191919;
     background-color: rgb(255, 108, 108);
     border: 3px solid rgb(255, 122, 122);
-    font-size: 110%;
+    font-size: 140%;
     border-radius: 4px;
     box-sizing: border-box;
-    width: 10%;
-    display: inline-block;
+    padding-right: 5%;
+    padding-left: 5%;
+    font-weight: bolder;
 }
 /* ------------------ MANAGE COMMENTS PAGE ---------------------- */
 .action-btn {

@@ -79,7 +79,8 @@
         $time = date('Y-m-d').' '.date('H:i');
 
         // echo "true";
-        echo newComment($time, $_POST['content'], $_POST['rating-option'], $file);
+        if (newComment($time, $_POST['content'], $_POST['rating-option'], $file)) echo '<script>alertify.success("Comment Added!"); location.replace("index.html");</script>';
+        else echo '<script>alertify.message("Something Went Wrong..."); location.replace("add.html");</script>';
     }
 
     if($_POST['message'] == "populate-blog") {
@@ -123,9 +124,14 @@
         $s -> execute();
         $max = $s -> fetchColumn();
 
-        $sql = "INSERT INTO BlogComments VALUES (".$max.", '".$time."', '".$content."', ".$rating.", 1, $file);";
-        $c -> setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $c -> exec($sql);
+        $sql = "INSERT INTO BlogComments VALUES (".$max.", '".$time."', '".$content."', ".$rating.", 1, '".$file."');";
+        try {
+            $c -> setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $c -> exec($sql);
+        } catch(PDOException $e) {
+            return false;
+        }
+        return true;
     }
 
     function miltoregtime($time) {

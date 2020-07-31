@@ -204,7 +204,7 @@
                     <div class = "inputfile-container">
                         <input type = "file" id = "attachment" name = "attachment" class = "inputfile" required = "false"/>
                         <label for = "attachment" id = "attachment-label"> Attach a File! </label>
-                        <button class = "cancelFile" id = "cancelFile"><i class = "fa fa-times" style = "display: none;"></i></button>
+                        <button class = "cancelFile" id = "cancelFile" style = "display: none;"><i class = "fa fa-times" style = "display: none;"></i>X</button>
                     </div>
                     <br><br>
                     <input type = "hidden" name = "message" value = "add-blog-comment" />
@@ -327,6 +327,7 @@
         // });
         
         function cleanNewCommentInputs() {
+            var options = document.getElementsByName("rating-option");
             document.getElementById("comment-text").value = "";
             for(var i = 0; i < options.length; i++) {
                 options[i].checked = false;
@@ -357,11 +358,18 @@
         $("#attachment").change(function() {
             if(document.getElementById("attachment").value == "") {
                 document.getElementById("cancelFile").style.display = "none";
+                document.getElementById("attachment-label").style.innerHTML = "Attach a File";
             } 
             else {
-                dcument.getElementById("cancelFile").style.display = "inline-block";
+                document.getElementById("cancelFile").style.display = "block";
+                document.getElementById("attachment-label").innerHTML = "File Added!";
             }
         });
     
+        $("#cancelFile").click(function(event) {
+            event.preventDefault(); //avoid form submission by button click
+            document.getElementById("cancelFile").style.display = "none";
+            document.getElementById("attachment-label").innerHTML = "File Added!";
+        });
     </script>
 </html>
