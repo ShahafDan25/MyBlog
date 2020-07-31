@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title> Shahafster Blog </title>
+        <meta charset = utf-8 />
+        <meta name = "viewport" content = "width=device-width, initial-scale=1">
+        <!-- JQUERY AND AJAX -->
+        <script src = "https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity = "sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin = "anonymous"></script>
+        <script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+        <!-- ALERTIFY.JS: JavaScrip and CSS -->
+        <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css"/>
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/default.min.css"/>
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/semantic.min.css"/>
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/bootstrap.min.css"/>
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.rtl.min.css"/>
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/default.rtl.min.css"/>
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/semantic.rtl.min.css"/>
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/bootstrap.rtl.min.css"/>
+
+        <!-- FONTAWESOME ICON --> 
+        <script src = "https://use.fontawesome.com/9f04ec4af7.js"></script>
+
+        <!-- MY JAVASCRIPT FILE --> 
+        <script src = "main.js" type = "text/javascript"></script>
+
+        <!-- MY CSS FILE -->
+        <link rel = "stylesheet" href = "main.css">
+    </head>
+    <!---------------------------------------- CONTENT: ------------------------------------------------>
+    
+    <body>
+        <header>
+            <button class = "show-sidebar-btn-manage-page" onclick = "slideSidebar();"><i class = "fa fa-bars"></i></button>
+            <h3 class = "header-name-manage-page" onclick = "location.replace('index.html');">Shahafster</h3>
+        </header>
+        <div class = "sidebar inline" id = "sidebar">
+            <a class = "sidebar-option" onclick = "slideSidebar();"> Close </a>
+            <a class = "sidebar-option" onclick = "addComments();" > Add </a>
+            <a class = "sidebar-option" onclick = "manageComments();" > Manage </a>
+            <a class = "sidebar-option" id = "header-add-page-change-pw-btn" > Password </a>
+        </div>
+        <div class = "container container-without-sidebar" id = "container">
+            <div class = "add-blog-container" id = "add-comment-div" style = "display: block;">
+                <h1 class = "add-to-blog-title-text"> <u> Add a Comment </u></h1>
+                <form action = "main.php" method = "POST" id = "add-blog-comment-form">
+                    <textarea type = "text" id = "comment-text" class = "add-blog-comment-input" placeholder = "  Blogging ... " rows = "6" name = "content" required></textarea>
+                    <br><br>
+                    <div class = "feelings-rating-options">
+                        <div class = "rating-option-div">
+                            <input type = "radio" class = "rating-option" name = "rating-option" value = "128513" id = "option-1">
+                            <label class = "label-option" for = "option-1">&#128513;</label>
+                        </div>
+                        <div class = "rating-option-div">
+                            <input type = "radio" class = "rating-option" name = "rating-option" value = "128528" id = "option-2">
+                            <label class = "label-option" for = "option-2">&#128528;</label>
+                        </div>
+                        <div class = "rating-option-div">
+                            <input type = "radio" class = "rating-option" name = "rating-option" value = "128532" id = "option-3">
+                            <label class = "label-option" for = "option-3">&#128532;</label>
+                        </div>
+                        <div class = "rating-option-div">
+                            <input type = "radio" class = "rating-option" name = "rating-option" value = "128548" id = "option-4">
+                            <label class = "label-option" for = "option-4">&#128548;</label>
+                        </div>
+                        <div class = "rating-option-div">
+                            <input type = "radio" class = "rating-option" name = "rating-option" value = "128554" id = "option-5">
+                            <label class = "label-option" for = "option-5">&#128554;</label>
+                        </div>
+                        <div class = "rating-option-div">
+                            <input type = "radio" class = "rating-option" name = "rating-option" value = "129300" id = "option-6">
+                            <label class = "label-option" for = "option-6">&#129300;</label>
+                        </div>
+                        <div class = "rating-option-div">
+                            <input type = "radio" class = "rating-option" name = "rating-option" value = "129327" id = "option-7">
+                            <label class = "label-option" for = "option-7">&#129327;</label>
+                        </div>
+                        <div class = "rating-option-div">
+                            <input type = "radio" class = "rating-option" name = "rating-option" value = "128514" id = "option-8">
+                            <label class = "label-option" for = "option-8">&#128514;</label>
+                        </div>
+                        <div class = "rating-option-div">
+                            <input type = "radio" class = "rating-option" name = "rating-option" value = "128527" id = "option-9">
+                            <label class = "label-option" for = "option-9">&#128527;</label>
+                        </div>
+                        <div class = "rating-option-div">
+                            <input type = "radio" class = "rating-option" name = "rating-option" value = "128531" id = "option-10">
+                            <label class = "label-option" for = "option-10">&#128531;</label>
+                        </div>
+                        <div class = "rating-option-div">
+                            <input type = "radio" class = "rating-option" name = "rating-option" value = "128545" id = "option-11">
+                            <label class = "label-option" for = "option-11">&#128545;</label>
+                        </div>
+                        <div class = "rating-option-div">
+                            <input type = "radio" class = "rating-option" name = "rating-option" value = "128564" id = "option-12">
+                            <label class = "label-option" for = "option-12">&#128564;</label>
+                        </div>
+                        <!-- SECOND TIME ADDING EMOJIS-->
+                        <div class = "rating-option-div">
+                            <input type = "radio" class = "rating-option" name = "rating-option" value = "128526" id = "option-13">
+                            <label class = "label-option" for = "option-13">&#128526;</label>
+                        </div>
+                        <div class = "rating-option-div">
+                            <input type = "radio" class = "rating-option" name = "rating-option" value = "128552" id = "option-14">
+                            <label class = "label-option" for = "option-14">&#128552;</label>
+                        </div>
+                        <div class = "rating-option-div">
+                            <input type = "radio" class = "rating-option" name = "rating-option" value = "128557" id = "option-15">
+                            <label class = "label-option" for = "option-15">&#128557;</label>
+                        </div>
+                        <div class = "rating-option-div">
+                            <input type = "radio" class = "rating-option" name = "rating-option" value = "128567" id = "option-16">
+                            <label class = "label-option" for = "option-16">&#128567;</label>
+                        </div>
+                        <div class = "rating-option-div">
+                            <input type = "radio" class = "rating-option" name = "rating-option" value = "129299" id = "option-17">
+                            <label class = "label-option" for = "option-17">&#129299;</label>
+                        </div>
+                        <div class = "rating-option-div">
+                            <input type = "radio" class = "rating-option" name = "rating-option" value = "9203" id = "option-18">
+                            <label class = "label-option" for = "option-18">&#9203;</label>
+                        </div>
+                        <div class = "rating-option-div">
+                            <input type = "radio" class = "rating-option" name = "rating-option" value = "9749" id = "option-19">
+                            <label class = "label-option" for = "option-19">&#9749;</label>
+                        </div>
+                        <div class = "rating-option-div">
+                            <input type = "radio" class = "rating-option" name = "rating-option" value = "10017" id = "option-20">
+                            <label class = "label-option" for = "option-20">&#10017;</label>
+                        </div>
+                        <div class = "rating-option-div">
+                            <input type = "radio" class = "rating-option" name = "rating-option" value = "127866" id = "option-21">
+                            <label class = "label-option" for = "option-21">&#127866;</label>
+                        </div>
+                        <div class = "rating-option-div">
+                            <input type = "radio" class = "rating-option" name = "rating-option" value = "128077" id = "option-22">
+                            <label class = "label-option" for = "option-22">&#128077;</label>
+                        </div>
+                        <div class = "rating-option-div">
+                            <input type = "radio" class = "rating-option" name = "rating-option" value = "128078" id = "option-23">
+                            <label class = "label-option" for = "option-23">&#128078;</label>
+                        </div>
+                        <div class = "rating-option-div">
+                            <input type = "radio" class = "rating-option" name = "rating-option" value = "128076" id = "option-24">
+                            <label class = "label-option" for = "option-24">&#128076;</label>
+                        </div>
+                        <div class = "rating-option-div">
+                            <input type = "radio" class = "rating-option" name = "rating-option" value = "128083" id = "option-25">
+                            <label class = "label-option" for = "option-25">&#128083;</label>
+                        </div>
+                        <div class = "rating-option-div">
+                            <input type = "radio" class = "rating-option" name = "rating-option" value = "128175" id = "option-26">
+                            <label class = "label-option" for = "option-26">&#128175;</label>
+                        </div>
+                        <div class = "rating-option-div">
+                            <input type = "radio" class = "rating-option" name = "rating-option" value = "128293" id = "option-27">
+                            <label class = "label-option" for = "option-27">&#128293;</label>
+                        </div>
+                        <!-- THIRD TIME ADDING EMOJIS      3      -->
+                        <div class = "rating-option-div">
+                            <input type = "radio" class = "rating-option" name = "rating-option" value = "128123" id = "option-28">
+                            <label class = "label-option" for = "option-28">&#128123;</label>
+                        </div>
+                        <div class = "rating-option-div">
+                            <input type = "radio" class = "rating-option" name = "rating-option" value = "129318" id = "option-29">
+                            <label class = "label-option" for = "option-29">&#129318;</label>
+                        </div>
+                        <div class = "rating-option-div">
+                            <input type = "radio" class = "rating-option" name = "rating-option" value = "128170" id = "option-30">
+                            <label class = "label-option" for = "option-30">&#128170;</label>
+                        </div>
+                        <div class = "rating-option-div">
+                            <input type = "radio" class = "rating-option" name = "rating-option" value = "128165" id = "option-31">
+                            <label class = "label-option" for = "option-31">&#128165;</label>
+                        </div>
+                        <div class = "rating-option-div">
+                            <input type = "radio" class = "rating-option" name = "rating-option" value = "127941" id = "option-32">
+                            <label class = "label-option" for = "option-32">&#127941;</label>
+                        </div>
+                        <div class = "rating-option-div">
+                            <input type = "radio" class = "rating-option" name = "rating-option" value = "128176" id = "option-33">
+                            <label class = "label-option" for = "option-33">&#128176;</label>
+                        </div>
+                        <div class = "rating-option-div">
+                            <input type = "radio" class = "rating-option" name = "rating-option" value = "128187" id = "option-34">
+                            <label class = "label-option" for = "option-34">&#128187;</label>
+                        </div>
+                        <div class = "rating-option-div">
+                            <input type = "radio" class = "rating-option" name = "rating-option" value = "128242" id = "option-35">
+                            <label class = "label-option" for = "option-35">&#128242;</label>
+                        </div>
+                        <div class = "rating-option-div">
+                            <input type = "radio" class = "rating-option" name = "rating-option" value = "9889" id = "option-36">
+                            <label class = "label-option" for = "option-36">&#9889;</label>
+                        </div>
+                        <div class = "rating-option-div">
+                            <input type = "radio" class = "rating-option" name = "rating-option" value = "10071" id = "option-37">
+                            <label class = "label-option" for = "option-37">&#10071;</label>
+                        </div>
+                    </div>
+                    <br><br>
+                    <!-- INPUT FILES -->
+                    <div class = "inputfile-container">
+                        <input type = "file" id = "attachment" name = "attachment" class = "inputfile" required = "false"/>
+                        <label for = "attachment" id = "attachment-label"> Attach a File! </label>
+                        <button class = "cancelFile" id = "cancelFile"><i class = "fa fa-times" style = "display: none;"></i></button>
+                    </div>
+                    <br><br>
+                    <input type = "hidden" name = "message" value = "add-blog-comment" />
+                    <button class = "add-blog-comment-btn"> SUBMIT </button>                
+                </form>
+            </div>
+            <div class = "manage-comment-div" id = "manage-comment-div" style = "display: none;">
+                <h1 class = 'add-to-blog-title-text'> <u> Manage Blog Comments </u></h1>
+                <div id = "comments-to-manage">
+                    <!-- TO BE POPULATED -->
+                </div>
+            </div>
+        </div>     
+    </body>
+    <footer>
+        Shahaf Dan Productions
+        <br>
+        #PersonalBlog
+    </footer>
+    <script>
+        alertify.set('notifier','position', 'bottom-center'); //set position    
+        alertify.set('notifier','delay', 1.5); //set dellay
+
+        $("#header-add-page-change-pw-btn").click(function() {
+            alertify.prompt (
+                "Change Password",
+                "Please Enter The New Password",
+                oldpw,
+                function(event, value) {
+                    $.ajax({
+                        type: "POST",
+                        url: "main.php",
+                        data: {
+                            message: "change-pw",
+                            pw: value
+                        },
+                        success: function(data) {
+                            if(data == "true") alertify.success("Password Changed!");
+                            else alertify.error ("Something went wrong...");
+                        }
+                    });
+                },
+                function() {
+                    alertify.warning("Password was not changed!");
+                }
+            );
+        }); 
+
+        var oldpw = "";
+        $(document).ready(function() {
+            $.ajax({
+                type: "POST",
+                url: "main.php",
+                data: {
+                    message: "get-add-blog-pw"
+                },
+                success: function(data) {
+                    promptPassword(data, "Enter Password")  ;                    
+                }
+            });
+
+            cleanNewCommentInputs();
+
+            $.ajax({
+                type: "POST",
+                url: "main.php",
+                data: {
+                    message: "populate-comments-tomanage"
+                },
+                success: function(data) {
+                    $("#comments-to-manage").html(data);
+                }
+            });
+        });
+
+        function promptPassword(oldpw, title) {
+            alertify.prompt (
+                title, 
+                "To post a blog message you need the Shahafster's Passowrd", 
+                "",
+                function(event, value){
+                    if(value == oldpw) alertify.success("Welcome!");
+                    else {
+                        alertify.error("Wrong Password!").ondismiss = function() {
+                            promptPassword(oldpw, "Wrong Password...");
+                        }
+                    }
+                },
+                function() {
+                    alertify.message("Goodbye...").ondismiss = function() {
+                        location.replace("index.html");
+                    }
+                }
+            );
+        }
+
+        // $("#add-blog-comment-form").submit(function(e){
+        //     e.preventDefault();
+        //     var options = document.getElementsByName("rating-option");
+        //     var chosenOne = "checkerVariable";
+        //     for(var i = 0; i < options.length; i++) {
+        //         if(options[i].checked) chosenOne = options[i].value;
+        //     }
+        //     if(chosenOne == "checkerVariable") alertify.warning("Please Choose an Emoji");
+        //     else{
+        //         $.ajax({
+        //             type: "POST",
+        //             url: "main.php",
+        //             data: {
+        //                 message: "add-blog-comment",
+        //                 rating: chosenOne,
+        //                 content: document.getElementById("comment-text").value
+        //             },
+        //             success: function(data) {
+        //                 alertify.success("Comment Added!");
+        //                 cleanNewCommentInputs();
+        //             }
+        //         });
+        //     } 
+        // });
+        
+        function cleanNewCommentInputs() {
+            document.getElementById("comment-text").value = "";
+            for(var i = 0; i < options.length; i++) {
+                options[i].checked = false;
+            }
+            document.getElementById("attachment").value = "";
+        }
+
+        function likeComment(id) {
+            document.getElementById("liked-"+id).style.display = "inline-block";
+            document.getElementById("not-liked-"+id).style.display = "none";
+            // alertify.confirm(
+            //     "To liked this comment...",
+            //     "you will need to enter your name and email address"
+            // );
+            $.ajax({
+                type: "POST",
+                utl: "main.php",
+                data: {
+                    message: "add-like",
+                    iden: id
+                },
+                success: function(data) {
+                    $("#amount-likes").html(data);
+                }
+            });
+        }
+    
+        $("#attachment").change(function() {
+            if(document.getElementById("attachment").value == "") {
+                document.getElementById("cancelFile").style.display = "none";
+            } 
+            else {
+                dcument.getElementById("cancelFile").style.display = "inline-block";
+            }
+        });
+    
+    </script>
+</html>

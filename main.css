@@ -1,0 +1,601 @@
+/* ------------------ ALERTIFY CSS -------------------*/
+.ajs-message,.ajs-success, .ajs-error, .ajs-warning { 
+    font-size: 110% !important;
+    font-weight: bold !important;
+    margin-bottom: 70px !important;
+    padding: 15px !important;
+    width: 400px !important;
+    color: black !important;
+    font-family: "Gill Sans" !important;
+}
+.ajs-message {
+    /* color: rgb(102, 124, 246) !important;   */
+    background-color: #d3e2ff !important; 
+    border: 3px solid rgb(102, 124, 246) !important;
+}
+.ajs-success {
+    /* color: rgb(54, 151, 67) !important;   */
+    background-color: #b4f8b8 !important; 
+    border: 3px solid rgb(54, 151, 67) !important;
+}
+.ajs-error {
+    /* color: rgb(177, 31, 31) !important;   */
+    background-color: #ffc0c0 !important; 
+    border: 3px solid rgb(177, 31, 31) !important;
+}
+.ajs-warning {
+    /* color: rgb(212, 200, 23) !important;   */
+    background-color: #fafbb5 !important; 
+    border: 3px solid rgb(212, 200, 23) !important;
+}
+
+/* ------------- GENERAL -------------- */
+.inline{
+    display: inline-block !important; 
+    flex-direction: row;
+}
+.inline-f {
+    display: inline-flex !important; 
+    flex-direction: row;
+}
+.gillsans {
+    font-family: "Gill Sans" !important;
+}
+.goleft {
+    float: left;
+}
+.goright {
+    float: right;
+}
+/*---------- CONTAINERS ------------- */
+html {
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+}
+body {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    z-index: 1;
+}
+.container {
+    padding: 1% 1% 3% 1%;
+    position: absolute;
+}
+.container-without-sidebar {
+    margin-left: 0%;
+    width: 100%;
+    animation: slide-to-sidebar 0.4s ease-in-out;
+}
+@keyframes slide-to-sidebar {
+    from {
+        width: 75%;
+        margin-left: 15%;
+    }
+    to {
+        width: 90%;
+        margin-left: 0%;
+    }
+}
+.container-with-sidebar {
+    width: 85%;
+    margin-left: 15%;
+    animation: slide-from-sidebar 0.4s ease-in-out;
+}
+@keyframes slide-from-sidebar {
+    from {
+        width: 90%;
+        margin-left: 0%;
+    }
+    to {
+        width: 75%;
+        margin-left: 15%;
+    }
+}
+footer {
+    width: 100%;
+    height: 7%;
+    border-bottom: 0.5px solid black;
+    background-color: #303030;
+    color: #7C9AFF;
+    font-family: "Gill Sans";
+    text-align: center;
+    padding: 1%;
+    border-top: 0.5px solid black;
+    /* position: absolute; */
+    bottom: 20px;
+    display: none;
+    position: fixed !important;
+}
+/*----------------- NAVIGATION BAR ------------------- */
+header {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    height: 10%;
+    top: 0px !important;
+    background-color: #303030;
+    font-family: "Popping-Regular";
+    z-index: 500;
+    position: sticky !important;
+
+}
+.show-sidebar-btn, .show-sidebar-btn-manage-page {
+    height: 60%;
+    margin-top: 1%;
+    padding-right: 1%;
+    padding-left: 1%;
+    color: white;
+    background: #303030;
+    border-radius: 15px;
+    box-shadow: -3px -3px 7px black 3px 3px 7px white;
+    box-shadow: -1px -1px 7px #ffffff2c, 1px 1px 5px black;
+    border: none;
+    margin-left: 3%;
+    font-size: 200%;
+    z-index: 505;
+}
+.header-page-name {
+    margin-right: 2%;
+    float: right;
+    font-family: Frutiger, "Frutiger Linotype", Univers, Calibri, "Gill Sans", "Gill Sans MT", "Myriad Pro", Myriad, "DejaVu Sans Condensed", "Liberation Sans", "Nimbus Sans L", Tahoma, Geneva, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 150%;
+    letter-spacing: 0.05em;
+    z-index: 505;
+    position: relative;
+    vertical-align: middle;
+    color: #7C9AFF;
+}
+.header-name-manage-page {
+    margin-right: 5%;
+    float: right;
+    font-family: Frutiger, "Frutiger Linotype", Univers, Calibri, "Gill Sans", "Gill Sans MT", "Myriad Pro", Myriad, "DejaVu Sans Condensed", "Liberation Sans", "Nimbus Sans L", Tahoma, Geneva, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 150%;
+    letter-spacing: 0.05em;
+    z-index: 505;
+    position: relative;
+    vertical-align: middle;
+    color: #7C9AFF;
+}
+
+/* --------------------- SIDE BAR -------------------- */
+.sidebar {
+    margin: 0;
+    padding: 0;
+    width: 15%;
+    height: 100%;
+    border-right: 3px solid black;
+    overflow: auto;
+    position: fixed;
+    padding: 0% 0% 3% 0%;
+    margin-left: -15%;    
+    z-index: 400;
+
+}
+.sidebar-option {
+    width: 100%;
+    height: 5%;
+    color: black;
+    background-color: rgba(248, 226, 201, 0.883);
+    outline: none;
+    border: none;
+    font-size: 125%;
+    padding-left: 15%;
+    padding-top: 7%;
+    text-align: left;
+    text-decoration: none;
+    outline: none;
+    display: block;
+    font-family: Impact, Haettenschweiler, "Franklin Gothic Bold", Charcoal, "Helvetica Inserat", "Bitstream Vera Sans Bold", "Arial Black", sans-serif;
+}
+.sidebar-option:active {
+    border-radius: 3px;
+    border: 2px solid rgb(255, 184, 51);
+}
+.sidebar-open-animation {
+    animation: sidebar-open-slide 0.4s ease-in-out;
+    margin-left: 0%;
+}
+@keyframes sidebar-open-slide {
+    from {margin-left: -15%; }
+    to {margin-left: 0%;}
+}
+.sidebar-close-animation {
+    animation: sidebar-close-slide 0.4s ease-in-out;
+    margin-left: -15%;
+}
+@keyframes sidebar-close-slide {
+    from {margin-left: 0%;}
+    to {margin-left: -15%;}
+}
+
+/* -------------------------- BLOG ------------------------- */
+
+.blog {
+    font-family: "Gill Sans";
+    /* font-family: "Popping-Regular"; */
+}
+.time-stamp {
+    float: right;
+    color: #909090;
+    font-size: 60%;
+    font-weight: bold;
+    position: relative;
+    padding-left: 2%;
+    margin-bottom: 0px !important;
+}
+.blog-comment-sep {
+    color: gray;
+    height: 0.5px;
+    background-color: gray;
+    border: none;
+}
+.blog-comment-container {
+    width: 100%;
+    display: block;
+    border-bottom: 1px solid gray;
+}
+.blog-comment {
+    display: inline-block;
+    padding-left: 1%;
+    padding-right: 1%;
+    width: 85%;
+}
+.blog-like {
+    display: inline-block;
+    padding-left: 1%;
+    padding-right: 2%;
+    width: 9%;
+    text-align: center;
+}
+.blog-comment-text {
+    text-align: justify;
+}
+.blog-not-liked-btn, .blog-liked-btn {
+    color: rgb(255, 108, 108);
+    border: none;
+    font-size: 130%;
+    display: inline-block;
+    background-color: transparent;
+}
+.amount-likes {
+    font-size: 80%;
+    display: inline-block;
+}
+/* ------------------------ ADD COMMENT PAGE ------------------------ */
+.add-blog-container {
+    text-align: center;
+    padding: 1% 1.5% 3% 2%;
+    margin-left: 0%;
+    position: absolute;
+    width: 90%;
+}
+.add-blog-comment-btn {
+    width: 50%;
+    background-color: #01FF70;
+    padding: 1%;
+    border: none;
+    border-radius: 3px;
+    color: white;
+    font-weight: bolder;
+    font-size: 110%;
+    transition: 0.15s;
+    position: static;
+}
+.add-blog-comment-btn:hover {
+    padding: 1.25%;
+    width: 60%;
+    font-weight: bold;
+    font-size: 110%;
+    transition: all 0.15s linear;
+}
+.add-blog-comment-input {
+    border: none;
+    border-left: 2px solid black;
+    width: 90%;
+    outline: none;
+    resize: none;
+    font-family: "Gill Sans";
+    padding: 1% 2% 1% 1.5%;
+    transition: 0.2s ease;
+    box-shadow: 2px 2px 4px #606060;
+}
+.add-blog-comment-input:focus {
+    border-left: 4px solid #7C9AFF;
+    transition: all 0.2s ease;
+}
+.feelings-rating-options {
+    font-size: 250%;
+    width: 80%;
+    margin-left: 8%;
+}
+.rating-option {
+    position: absolute;
+    display: none;
+}
+.rating-option-div {
+    text-align: center;
+    vertical-align: middle;
+    display: inline-flex;
+    height: auto;
+}
+.rating-option:checked ~ .label-option {
+    font-size: 130%;
+    transition: all 0.3s ease-in-out;
+}
+.rating-option:not(:checked) ~ .label-option  {
+    font-size: 100%;
+    transition: all 0.3s ease-in-out;
+}
+.add-blog-comment-form {
+    position: fixed;
+    display: block;
+}
+.add-to-blog-title-text {
+    font-family: 'Gill Sans'; 
+    margin-left: 5%;
+    text-align: left;
+    display: block;
+}
+
+.add-blog-container form .inputfile-container input[type=file] {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+    text-align: right;
+    display: inline-block;
+}
+.add-blog-container form .inputfile-container input[type=file] + label {
+    flex: 5;
+    font-size: 80%;
+    font-weight: 700;
+    color: black;
+    background-color: rgb(108, 255, 177);
+    display: inline-block;
+    cursor: pointer;
+    padding: 1% 5% 1% 5%;
+    margin: 0% 1% 0% 1%;
+    box-sizing: border-box;
+    font-family: "Gill Sans";
+    border-radius: 4px;
+    display: inline-block;
+}
+.add-blog-container form .inputfile-container input[type=file]:focus + label, .add-blog-container form .inputfile-container input[type=file] + label:hover {
+    background-color: rgb(69, 221, 140);
+}
+.add-blog-container form .inputfile-container .cancelFile {
+    color: #191919;
+    background-color: rgb(255, 108, 108);
+    border: 3px solid rgb(255, 122, 122);
+    font-size: 110%;
+    border-radius: 4px;
+    box-sizing: border-box;
+    width: 10%;
+    display: inline-block;
+}
+/* ------------------ MANAGE COMMENTS PAGE ---------------------- */
+.action-btn {
+    width: auto;
+    padding: 0.8%;
+    font-size: 90%;
+    border-radius: 150px;
+    border: none;
+    margin-right: 1%;
+    margin-top: 0.5%;
+    color: #E0E0E0;
+}
+.edit-btn {
+    background-color: #7C9AFF;
+    font-family: "Gill Sans";
+}
+.deactivate-btn {
+    background-color: rgb(255, 122, 122);
+    font-family: "Gill Sans";
+}
+.activate-btn {
+    background-color: #01FF70;
+    font-family: "Gill Sans";
+}
+.action-btns-div {
+    width: auto;
+    /* float: right; */
+    /* margin-right: 5%; */
+}
+.comments-to-manage {
+    width: 100%;
+    font: "Gill Sans";
+    display: block;
+}
+.matrix {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: auto;
+    font: "Gill Sans" !important;
+
+}
+.matrix thead {
+    text-align: left;
+}
+.matrix thead tr th, .matrix thead tr td {
+    padding-left: 3%;
+    padding-bottom: 0.5%;
+    border-bottom: 1px solid black;
+}
+.matrix tr {
+    /* display: flex; */
+    flex: auto;
+}
+.matrix tbody tr td, .matrix tbody tr th {
+    padding: 0.75%;
+}
+th {
+    font-weight: 900;
+}
+
+/* ------------------ SMALLER MEDIA SIZES ---------------------- */
+@media (max-width: 576px)  {
+
+    .show-sidebar-btn, .show-sidebar-btn-manage-page {
+        height: 60%;
+        margin-top: 4%;
+        width: 15%;
+        margin-left: 5%;
+    }
+    .header-page-name {
+        margin-right: 5%;
+        margin-top: 7%;
+        font-size: 125%;
+    }
+    .add-to-blog-title-text {
+        display: none;
+    }
+    .action-btn {
+        padding: 2% !important;
+    }
+    .sidebar {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        border: none;
+        height: auto;
+        background-color: rgb(248, 226, 201);
+        border-bottom: 3px solid black;
+        overflow: auto;
+        position: fixed;
+        z-index: 300;
+        text-align: center;
+        margin-left: -100%;    
+    }
+    .sidebar-option {
+        width: auto;
+        height: 5%;
+        display: inline-flex;
+        font-size: 85%;
+        background-color: transparent;
+        padding: 2% 4% 2% 4%; 
+    }
+    .sidebar-open-animation {
+        animation: sidebar-open-slide 0.4s ease-in-out;
+        margin-left: 0%;
+    }
+    @keyframes sidebar-open-slide {
+        from {margin-left: -100%; }
+        to {margin-left: 0%;}
+    }
+    .sidebar-close-animation {
+        animation: sidebar-close-slide 0.4s ease-in-out;
+        margin-left: -100%;
+    }
+    @keyframes sidebar-close-slide {
+        from {margin-left: 0%;}
+        to {margin-left: -100%;}
+    }
+
+    .container {
+        padding: 1% 2.5% 3% 2.5%;
+        position: absolute;
+        width: 95%;
+    }
+    .container-without-sidebar {
+        width: 95%;
+        margin-left: 0%;
+        margin-top: 0%;
+        animation: slide-to-sidebar 0.4s ease-in-out;
+    }
+    @keyframes slide-to-sidebar {
+        from {
+            width: 95%;
+            margin-left: 0%;
+            margin-top: 7%;
+        }
+        to {
+            width: 95%;
+            margin-left: 0%;
+            margin-top: 0%;
+        }
+    }
+    .container-with-sidebar {
+        width: 95%;
+        margin-left: 0%;
+        margin-top: 7%;
+        animation: slide-from-sidebar 0.4s ease-in-out;
+    }
+    @keyframes slide-from-sidebar {
+        from {
+            width: 95%;
+            margin-left: 0%;
+            margin-top: 0%;
+        }
+        to {
+            width: 95%;
+            margin-left: 0%;
+            margin-top: 7%;
+        }
+    }
+
+    .add-to-blog-title-text {
+        font-size: 120%;
+    }
+    .rating-option:checked ~ .label-option {
+        font-size: 100%;
+        transition: all 0.3s ease-in-out;
+    }
+    .rating-option:not(:checked) ~ .label-option  {
+        font-size: 75%;
+        transition: all 0.3s ease-in-out;
+    }
+    .feelings-rating-options{
+        width: 85%;
+        margin-left: 10%;
+        margin-right: 10%;
+    }
+    .rating-option-div {
+        position: static;
+    }
+    .add-blog-comment-btn {
+        width: 70%;
+        padding: 2.5%;
+    }
+    .add-blog-comment-btn:hover {
+        padding: 2.8%;
+        width: 75%;
+        font-weight: bold;
+        font-size: 110%;
+        transition: all 0.15s linear;
+    }
+    .header-add-page-change-pw-btn {
+        width: 30%;
+        margin-right: 5%;
+        margin-top: 6%;
+        padding: 2.5%;
+        font-size: 80%;
+        vertical-align: middle;
+    }
+    footer {
+        display: block;
+        bottom: 0px;
+        padding-top: 3%; 
+    }
+    .time-stamp {
+        float: none;
+        width: 100%;
+        text-align: right;
+        font-size: 70%;
+        font-weight: bold;
+        position: relative;
+        padding-left: 2%;
+    }
+    .ajs-message,.ajs-success, .ajs-error, .ajs-warning { 
+        font-size: 100% !important;
+        width: 80px !important;
+    }
+    .add-blog-comment-input {
+        height: 9em !important;
+    }
+}

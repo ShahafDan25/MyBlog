@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title> Shahafster Blog </title>
+        <meta charset = utf-8 />
+        <meta name = "viewport" content = "width=device-width, initial-scale=1">
+        <!-- BOOTSTRAP LINKS AND SCRIPTS -->
+        <!-- <link rel = "stylesheet" href = "https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"> -->
+        <!-- <script src = "https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>  -->
+
+        <!-- JQUERY AND AJAX -->
+        <script src = "https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity = "sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin = "anonymous"></script>
+        <script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+        <!-- FONTAWESOME ICON --> 
+        <script src = "https://use.fontawesome.com/9f04ec4af7.js"></script>
+
+        <!-- MY CSS FILE -->
+        <link rel = "stylesheet" type = "text/css" href = "main.css">
+
+        <!-- MY JAVASCRIPT FILE -->
+        <script src = "main.js"></script>
+
+    </head>
+    <!---------------------------------------- CONTENT: ------------------------------------------------>
+    
+    <body>
+        <header>
+            <button class = "show-sidebar-btn" onclick = "slideSidebar();"><i class = "fa fa-bars"></i></button>
+            <h3 class = "header-page-name" onclick = "location.replace('add.html');">Shahafster</h3>
+            <div class="my-bitmoji-stickerpicker-icon-target"></div>
+        </header>
+        <div class = "sidebar inline" id = "sidebar">
+            <a class = "sidebar-option" onclick = "slideSidebar();"> Blog </a>
+            <a class = "sidebar-option" href = "https://shahaf-dan.com/"> My Portfolio </a>
+            <a class = "sidebar-option" href = "https://twitter.com/shahaf_dan"> Twitter </a>
+        </div>
+        <div class = "container container-without-sidebar inline" id = "container">
+            <hr>
+            <div class = "blog" id = "blog">
+                <!-- TO BE POPULATED WITH PHP -->
+            </div>
+        </div>
+    </body>
+    <footer>
+        #100DaysOfCode
+    </footer>
+    <script>
+        $(document).ready(function() {
+            $.ajax({
+                type: "POST",
+                url: "main.php",
+                data: {
+                    message: "populate-blog"
+                },
+                success: function(data) {
+                    $("#blog").html(data);
+                }
+            });
+        });
+
+    </script>
+
+</html>
