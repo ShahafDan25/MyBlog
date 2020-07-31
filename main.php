@@ -37,11 +37,19 @@
     if($_POST['message'] == "get-add-blog-pw") {
         $c = connDB();
 
-        $sql = "SELECT password FROM BlogDetails WHERE active = 1";
-        $s = $c -> prepare($sql);
-        $s -> execute();
-        $r = $s -> fetch(PDO::FETCH_ASSOC);
-        echo $r['password'];
+        if(isset($_COOKIE['correct-pw'])) echo "cookiefound";
+        else {
+            $sql = "SELECT password FROM BlogDetails WHERE active = 1";
+            $s = $c -> prepare($sql);
+            $s -> execute();
+            $r = $s -> fetch(PDO::FETCH_ASSOC);
+            echo $r['password'];
+        }
+        
+    }
+
+    if($_POST['message'] == "login-cookie-start") {
+        setcookie('correct-pw', true, time()+60*60*24*30); //cookie will expire after 30 days :(
     }
 
     if($_POST['message'] == "change-pw") {
@@ -67,53 +75,70 @@
 
     if($_POST['message'] == "add-blog-comment") 
     {
-        
-        $file = addslashes(file_get_contents($_FILES["attachment"]["tmp_name"])); 
-        $fileSize = $_FILES['attachment']['size'];
-        $fileError = $_FILES['attachment']['error'];
-        if($fileError === 0) {
-            if($fileSize > 5000000) echo "<script>alertify.error('File too large. Must 5MB or less.'); goBack(); </script>";
-            else echo updateProfilePicture($file);
+        if(strlen($_FILES["attachment"]["tmp_name"]) > 1) { //file was added
+            $file = addslashes(file_get_contents($_FILES["attachment"]["tmp_name"])); 
+            $fileSize = $_FILES['attachment']['size'];
+            $fileError = $_FILES['attachment']['error'];
+            if($fileError === 0) {
+                if($fileSize > 5000000) echo "<script>alert('File too large. Must 5MB or less.'); goBack(); </script>";
+                else {
+                    $time = date('Y-m-d').' '.date('H:i');
+                    if (newComment($time, $_POST['content'], $_POST['rating-option'], $file)) echo '<script>alert("Comment Added!"); location.replace("index.html");</script>';
+                    else echo '<script>alert("Something Went Wrong..."); location.replace("add.html");</script>';
+                }
+            }
+            else echo "<script>alert.error('Something Went Wrong...'); goBack();</script>";
+        } 
+        else { //file was not added
+            $time = date('Y-m-d').' '.date('H:i');
+            if (newComment($time, $_POST['content'], $_POST['rating-option'], NULL)) echo '<script>alert("Comment Added!"); location.replace("index.html");</script>';
+            else echo '<script>alert("Something Went Wrong..!."); location.replace("add.html");</script>';
         }
-        else echo "<script>alertify.error('Something Went Wrong...'); goBack();</script>";
-        $time = date('Y-m-d').' '.date('H:i');
-
-        // echo "true";
-        if (newComment($time, $_POST['content'], $_POST['rating-option'], $file)) echo '<script>alertify.success("Comment Added!"); location.replace("index.html");</script>';
-        else echo '<script>alertify.message("Something Went Wrong..."); location.replace("add.html");</script>';
+        
+        
     }
 
     if($_POST['message'] == "populate-blog") {
+        echo populateBlog();
+    }
+
+    function populateBlog() {
+        $months = ["January", "February", "March", "April", "May", " June", "July", "August", "September", "October", "November", "December"];
         $c = connDB();
-        $sql = "SELECT ID, Stamp, Text, FeelingRate FROM BlogComments WHERE active = 1 ORDER BY Stamp DESC;";
+        $sql = "SELECT ID, Stamp, Text, FeelingRate, file FROM BlogComments WHERE active = 1 ORDER BY Stamp DESC;";
         $s = $c -> prepare($sql);
         $s -> execute();
         $data = "";
         while($r = $s -> fetch(PDO::FETCH_ASSOC)) {
             $stamp = miltoregtime(substr($r['Stamp'], 11, 5))."&ensp;&ensp;&ensp;".$months[intval(substr($r['Stamp'], 5, 2))-1]." ".substr($r['Stamp'], 8, 2).", ".substr($r['Stamp'], 0, 4);
-            $data .= "<div class = 'blog-comment-container'><div class = 'blog-comment'>";
-            // $data .= "";
+            $data .= "<div class = 'blog-comment'>";
+            $data .= "<p class = 'time-stamp'>".$stamp."</p>";
             $data .= "<p class = 'blog-comment-text'>&#".$r['FeelingRate']."&emsp;&emsp;".$r['Text']."</p>";
-            $data .= "</div>
-                <div class = 'blog-like'>
-                    <div style = 'display: block'>
-                        <p class = 'time-stamp'>".$stamp."</p>
-                    </div>
-                    <div style = 'display: block'>
-                        <button class = 'blog-not-liked-btn' id = 'not-liked-".$r['ID']."' onclick = 'likeComment(".$r['ID'].")' style = 'display: inline-block; color: red;'>
-                            <i class = 'fa fa-heart-o'></i>
-                        </button>
-                        <button class = 'blog-liked-btn' id = 'liked-".$r['ID']."' onclick = 'dislikeComment(".$r['ID'].")' style = 'display: none; color: red;'>
-                            <i class = 'fa fa-heart'></i>
-                        </button>           
-                        <p class = 'amount-likes' id = 'amount-likes'>3</p>
-                    </div>
-                </div>
-            </div>";
+            if($r['file']) {
+                $presentor = 'data:image/jpeg;base64,'.base64_encode($r['file']);
+                $data .= '<div class = "file-container"><div class = "file" style = "background-image: url(\''.$presentor.'\')"></div></div>';
+            }
+            $data .= "</div>";
+            // $data .= "</div>
+            //     <div class = 'blog-like'>
+            //         <div style = 'display: block'>
+            //             <p class = 'time-stamp'>".$stamp."</p>
+            //         </div>
+            //         <div style = 'display: block'>
+            //             <button class = 'blog-not-liked-btn' id = 'not-liked-".$r['ID']."' onclick = 'likeComment(".$r['ID'].")' style = 'display: inline-block; color: red;'>
+            //                 <i class = 'fa fa-heart-o'></i>
+            //             </button>
+            //             <button class = 'blog-liked-btn' id = 'liked-".$r['ID']."' onclick = 'dislikeComment(".$r['ID'].")' style = 'display: none; color: red;'>
+            //                 <i class = 'fa fa-heart'></i>
+            //             </button>           
+            //             <p class = 'amount-likes' id = 'amount-likes'>3</p>
+            //         </div>
+            //     </div>
+            // </div>";
         }
 
         $c = null; //close connection
-        echo $data;
+        return $data;
     }
 
     function newComment($time, $content, $rating, $file) {
@@ -129,6 +154,7 @@
             $c -> setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $c -> exec($sql);
         } catch(PDOException $e) {
+            echo '<script>console.log('.$e.');</script>';
             return false;
         }
         return true;
@@ -146,7 +172,6 @@
     function populateManagementTable() {
         $c = connDB(); 
         $months = ["January", "February", "March", "April", "May", " June", "July", "August", "September", "October", "November", "December"];
-
         $sql = "SELECT ID, Stamp, Text, FeelingRate, active FROM BlogComments ORDER BY Stamp DESC;";
         $s = $c -> prepare($sql);
         $s -> execute();

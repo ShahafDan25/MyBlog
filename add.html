@@ -44,7 +44,7 @@
         <div class = "container container-without-sidebar" id = "container">
             <div class = "add-blog-container" id = "add-comment-div" style = "display: block;">
                 <h1 class = "add-to-blog-title-text"> <u> Add a Comment </u></h1>
-                <form action = "main.php" method = "POST" id = "add-blog-comment-form">
+                <form action = "main.php" method = "POST" id = "add-blog-comment-form" enctype = "multipart/form-data">
                     <textarea type = "text" id = "comment-text" class = "add-blog-comment-input" placeholder = "  Blogging ... " rows = "6" name = "content" required></textarea>
                     <br><br>
                     <div class = "feelings-rating-options">
@@ -202,7 +202,7 @@
                     <br><br>
                     <!-- INPUT FILES -->
                     <div class = "inputfile-container">
-                        <input type = "file" id = "attachment" name = "attachment" class = "inputfile" required = "false"/>
+                        <input type = "file" id = "attachment" name = "attachment" class = "inputfile"/>
                         <label for = "attachment" id = "attachment-label"> Attach a File! </label>
                         <button class = "cancelFile" id = "cancelFile" style = "display: none;"><i class = "fa fa-times" style = "display: none;"></i>X</button>
                     </div>
@@ -281,24 +281,40 @@
         });
 
         function promptPassword(oldpw, title) {
-            alertify.prompt (
-                title, 
-                "To post a blog message you need the Shahafster's Passowrd", 
-                "",
-                function(event, value){
-                    if(value == oldpw) alertify.success("Welcome!");
-                    else {
-                        alertify.error("Wrong Password!").ondismiss = function() {
-                            promptPassword(oldpw, "Wrong Password...");
+            console.log(oldpw);
+            if(oldpw == "cookiefound") alertify.success("Welcome!"); //WELCOME
+            else {
+                alertify.prompt (
+                    title, 
+                    "To post a blog message you need the Shahafster's Passowrd", 
+                    "",
+                    function(event, value){
+                        if(value == oldpw)  {
+                            // add cookie for loging in
+                            $.ajax({
+                                type: "POST",
+                                url: "main.php",
+                                data: {
+                                    message: "login-cookie-start"
+                                },
+                                success: function(data) {
+                                    if($.trim(data) == "true") alertify.success("Welcome!"); //WELCOME
+                                }
+                            }); 
+                        }
+                        else {
+                            alertify.error("Wrong Password!").ondismiss = function() {
+                                promptPassword(oldpw, "Wrong Password...");
+                            }
+                        }
+                    },
+                    function() {
+                        alertify.message("Goodbye...").ondismiss = function() {
+                            location.replace("index.html");
                         }
                     }
-                },
-                function() {
-                    alertify.message("Goodbye...").ondismiss = function() {
-                        location.replace("index.html");
-                    }
-                }
-            );
+                );
+            }
         }
 
         // $("#add-blog-comment-form").submit(function(e){
