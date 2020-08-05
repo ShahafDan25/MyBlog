@@ -172,7 +172,7 @@
     function populateManagementTable() {
         $c = connDB(); 
         $months = ["January", "February", "March", "April", "May", " June", "July", "August", "September", "October", "November", "December"];
-        $sql = "SELECT ID, Stamp, Text, FeelingRate, active FROM BlogComments ORDER BY Stamp DESC;";
+        $sql = "SELECT ID, Stamp, Text, FeelingRate, active, file FROM BlogComments ORDER BY Stamp DESC;";
         $s = $c -> prepare($sql);
         $s -> execute();
         $data = "";
@@ -185,6 +185,10 @@
             if($r['active'] == 1) $data .= "<button class = 'action-btn deactivate-btn' onclick = 'deactiavte(".$r['ID'].")'><i class = 'fa fa-power-off'></i></button>";
             else $data .= "<button class = 'action-btn activate-btn' onclick = 'activate(".$r['ID'].")'><i class = 'fa fa-power-off'></i></button>";
             $data .= "&#".$r['FeelingRate']."&emsp;&emsp;".$r['Text']."</p>";
+            if($r['file']) {
+                $presentor = 'data:image/jpeg;base64,'.base64_encode($r['file']);
+                $data .= '<div class = "file-container"><div class = "file" style = "background-image: url(\''.$presentor.'\')"></div></div>';
+            }
             $data .= "</div>"; //comment div
         }
         $c = null; //close connection
