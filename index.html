@@ -15,6 +15,18 @@
         <!-- FONTAWESOME ICON --> 
         <script src = "https://use.fontawesome.com/9f04ec4af7.js"></script>
 
+        <!-- ALERTIFY.JS: JavaScrip and CSS -->
+        <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css"/>
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/default.min.css"/>
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/semantic.min.css"/>
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/bootstrap.min.css"/>
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.rtl.min.css"/>
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/default.rtl.min.css"/>
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/semantic.rtl.min.css"/>
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/bootstrap.rtl.min.css"/>
+
+
         <!-- MY CSS FILE -->
         <link rel = "stylesheet" type = "text/css" href = "main.css">
 
@@ -41,6 +53,20 @@
                 <!-- TO BE POPULATED WITH PHP -->
             </div>
         </div>
+        <div id = "register-form" style = "display: none" class = "register-form">
+            <form id = "registration-form">
+                <h2> You need to register to like posts </h2>
+                <label> First Name </label>
+                <input type = "text" id = "register-first-name" placeholder = "  ..."/>
+                <br>
+                <label> Last Name </label>
+                <input type = "text" id = "register-last-name" placeholder = "  ..."/>
+                <br>
+                <label> Create PIN </label>
+                <input type = "number" id = "register-pin" placeholder = "  ..."/>
+            </form>
+            
+        </div>
     </body>
     <footer>
         #100DaysOfCode
@@ -59,6 +85,70 @@
             });
         });
 
+
+        function likePost(id) {
+            $.ajax({
+                type: "POST",
+                url: "main.php",
+                data: {
+                    message: "check-login-cookie",
+                    postid: id
+                },
+                success: function(data) {
+                    console.log("likePost: " + data);
+                    if($.trim(data) == "notfound") {
+                        document.getElementById("register-form").style.display = "block";
+                        //create account
+                        register(id);
+                    }
+                    else {
+                        $("#like-icon-"+id).toggleClass("fa-heart-o");
+                        $("#like-icon-"+id).toggleClass("fa-heart");
+                        alertify.success("Welcome " + data + "!");
+                    }
+                }
+            });
+        }
+
+        // $("#registration-form").submit(function(event) {
+        //     event.preventDefault();
+        // }); 
+        // TODO: Take care of cases where fields are unfilled
+
+        function register(id) {
+            var form = document.getElementById("register-form");
+            alertify.confirm(
+                form,
+                function() { //register
+                    $.ajax({
+                        type: "POST",
+                        url: "main.php",
+                        data: {
+                            message: "set-account",
+                            firstname: $("#register-first-name").val(),
+                            lastname: $("#register-last-name").val(),
+                            pin: $("#register-pin").val(),
+                            post: id
+                        },
+                        success: function(data) {
+                            console.log("register:" + data);
+                            if($.trim(data) == "true") alertify.success("Success!");
+                            else if($.trim(data) == "false") {
+                                alertify.message ("PIN taken").ondismiss = function() {
+                                    $("#register-pin").val() = "";
+                                    register(id); 
+                                }
+                            }
+                        }
+                    }); 
+                },
+                function () { //cancel
+                    alertify.message("Maybe Later...");
+                    document.getElementById("register-form").style.display = "none";
+                }
+            ).set({labels:{ok: 'Submit', cancel: 'Cancel'}, padding: false});
+            
+        }
     </script>
 
 </html>

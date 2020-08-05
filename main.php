@@ -102,6 +102,51 @@
         echo populateBlog();
     }
 
+    if($_POST['message'] == "set-account") {
+        echo setAccount($_POST['firstname'], $_POST['lastname'], $_POST['pin'], $_POST['post']);
+    }
+
+    if($_POST['message'] == "check-login-cookie") {
+        if(!isset($_COOKIE["user"])) echo "notfound";
+        else echo likePost($_POST['postid']);
+    }
+
+    function likePost($postid) {
+        $sqlb = "SELECT Stamp FROM Likes WHERE Comment_ID = ".$postid." AND Visitors_ID = ".$_COOKIE['user'][2]." AND Visitors_FirstName = '".$_COOKIE["user"][0]."' AND Visitors_LastName = '".$_COOKIE['user'][1]."';";
+        $sb = $c -> prepare($sqlb);
+        $sb -> execute();
+        if($rb = $sb -> fetch(PDO::FETCH_ASSOC)) { //unlike
+            $sql = "DELETE FROM Likes WHERE Comment_ID = ".$postid." AND Visitors_ID = ".$_COOKIE['user'][2]." AND Visitors_FirstName = '".$_COOKIE["user"][0]."' AND Visitors_LastName = '".$_COOKIE['user'][1]."';";
+            $c -> prepare($sql) -> execute();
+        }
+        else { //like
+            $sql = "INSERT INTO Likes (Comment_ID, Visitors_ID, Visitors_LastName, Visitors_FirstName, Stamp) VALUES (".$postid.", ".$_COOKIE["user"][2].", '".$_COOKIE["user"][0]."', '".$_COOKIE["user"][1]."', NOW());";
+            $c -> setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $c -> exec($sql);
+        }
+        return $_COOKIE["user"][0];
+    }
+
+    function setAccount($first, $last, $pin, $postid) {
+        $c = connDB();
+        $sql = "SELECT Stamp FROM Visitors WHERE ID = ".$pin." AND FirstName = '".$first."' AND LastName = '".$last."';"; 
+        $s = $c -> prepare($sql);
+        $s -> execute();
+        if($s - fetch(PDO::FETCH_ASSOC)) return "false";
+        else {
+            $sql = "INSERT INTO Visitors (ID, FirstName, LastName, Stapm) VALUES (".$pin.", '".$first."', '".$last."'. NOW()):";
+            $c -> setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $c -> exec($sql);
+            $sql = "INSERT INTO Likes (Comment_ID, Visitors_ID, Visitors_LastName, Visitors_FirstName, Stamp) VALUES (".$postid.", ".$pin.", '".$first."', '".$last."', NOW());";
+            $c -> setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $c -> exec($sql);
+            $cookiedata = array($first, $last, $pin);
+            setcookie("user", $cookiedata, time() + 60*60*24*365*25); //set cookie to 25 years
+        }
+        $c = null; //close connection
+        return "true";
+    }
+
     function populateBlog() {
         $months = ["January", "February", "March", "April", "May", " June", "July", "August", "September", "October", "November", "December"];
         $c = connDB();
@@ -109,33 +154,70 @@
         $s = $c -> prepare($sql);
         $s -> execute();
         $data = "";
-        while($r = $s -> fetch(PDO::FETCH_ASSOC)) {
-            $stamp = miltoregtime(substr($r['Stamp'], 11, 5))."&ensp;&ensp;&ensp;".$months[intval(substr($r['Stamp'], 5, 2))-1]." ".substr($r['Stamp'], 8, 2).", ".substr($r['Stamp'], 0, 4);
-            $data .= "<div class = 'blog-comment'>";
-            $data .= "<p class = 'time-stamp'>".$stamp."</p>";
-            $data .= "<p class = 'blog-comment-text'>&#".$r['FeelingRate']."&emsp;&emsp;".$r['Text']."</p>";
-            if($r['file']) {
-                $presentor = 'data:image/jpeg;base64,'.base64_encode($r['file']);
-                $data .= '<div class = "file-container"><div class = "file" style = "background-image: url(\''.$presentor.'\')"></div></div>';
+        if(isset($_COOKIE["user"])) {
+            while($r = $s -> fetch(PDO::FETCH_ASSOC)) {
+                $sqlb = "SELECT COUNT(*) FROM Likes WHERE Comment_ID = ".$r['ID'].";";
+                $sb = $c -> prepare($sqlb);
+                $sb -> execute();
+                if($rb = $sb -> fetch(PDO::FETCH_ASSOC)) $likes = $rb ['COUNT(*)'];
+                else $likes = 0;
+                $sqlb = "SELECT Stamp FROM Likes WHERE Comment_ID = ".$r['ID']." AND Visitors_ID = ".$_COOKIE['user'][2]." AND Visitors_FirstName = '".$_COOKIE["user"][0]."' AND Visitors_LastName = '".$_COOKIE['user'][1]."';";
+                $sb = $c -> prepare($sqlb);
+                $sb -> execute();
+                if($rb = $sb -> fetch(PDO::FETCH_ASSOC)) $iconclass = "fa-heart";
+                else $iconclass = "fa-heart-o";
+                $stamp = miltoregtime(substr($r['Stamp'], 11, 5))."&ensp;&ensp;&ensp;".$months[intval(substr($r['Stamp'], 5, 2))-1]." ".substr($r['Stamp'], 8, 2).", ".substr($r['Stamp'], 0, 4);
+                $data .= "<div class = 'blog-comment'>";
+                $data .= '
+                <div class = "details">
+                    <p class = "feeling" id = "feeling-'.$r['ID'].'">&#'.$r['FeelingRate'].'</p>
+                    &emsp;&emsp;
+                    <div class = "likes">
+                        <button class = "likes-btn" onclick = "likePost('.$r['ID'].');">
+                            <i id = "like-icon-'.$r['ID'].'" class = "fa '.$iconclass.'"></i>
+                        </button>
+                        <p class = "likes-label" id = "likes-label-'.$r['ID'].'">'.$likes.'</p>
+                    </div>
+                    <p class = "time-stamp">'.$stamp.'</p>
+                </div>';
+                $data .= "<p class = 'blog-comment-text'>".$r['Text']."</p>";
+                if($r['file']) {
+                    $presentor = 'data:image/jpeg;base64,'.base64_encode($r['file']);
+                    $data .= '<div class = "file-container"><div class = "file" style = "background-image: url(\''.$presentor.'\')"></div></div>';
+                }
+                $data .= "</div>";
             }
-            $data .= "</div>";
-            // $data .= "</div>
-            //     <div class = 'blog-like'>
-            //         <div style = 'display: block'>
-            //             <p class = 'time-stamp'>".$stamp."</p>
-            //         </div>
-            //         <div style = 'display: block'>
-            //             <button class = 'blog-not-liked-btn' id = 'not-liked-".$r['ID']."' onclick = 'likeComment(".$r['ID'].")' style = 'display: inline-block; color: red;'>
-            //                 <i class = 'fa fa-heart-o'></i>
-            //             </button>
-            //             <button class = 'blog-liked-btn' id = 'liked-".$r['ID']."' onclick = 'dislikeComment(".$r['ID'].")' style = 'display: none; color: red;'>
-            //                 <i class = 'fa fa-heart'></i>
-            //             </button>           
-            //             <p class = 'amount-likes' id = 'amount-likes'>3</p>
-            //         </div>
-            //     </div>
-            // </div>";
         }
+        else {
+            while($r = $s -> fetch(PDO::FETCH_ASSOC)) {
+                $sqlb = "SELECT COUNT(*) FROM Likes WHERE Comment_ID = ".$r['ID'].";";
+                $sb = $c -> prepare($sqlb);
+                $sb -> execute();
+                if($rb = $sb -> fetch(PDO::FETCH_ASSOC)) $likes = $rb ['COUNT(*)'];
+                else $likes = 0;
+                $stamp = miltoregtime(substr($r['Stamp'], 11, 5))."&ensp;&ensp;&ensp;".$months[intval(substr($r['Stamp'], 5, 2))-1]." ".substr($r['Stamp'], 8, 2).", ".substr($r['Stamp'], 0, 4);
+                $data .= "<div class = 'blog-comment'>";
+                $data .= '
+                <div class = "details">
+                    <p class = "feeling" id = "feeling-'.$r['ID'].'">&#'.$r['FeelingRate'].'</p>
+                    &emsp;&emsp;
+                    <div class = "likes">
+                        <button class = "likes-btn" onclick = "likePost('.$r['ID'].');">
+                            <i id = "like-icon-'.$r['ID'].'" class = "fa fa-heart-o"></i>
+                        </button>
+                        <p class = "likes-label" id = "likes-label-'.$r['ID'].'">'.$likes.'</p>
+                    </div>
+                    <p class = "time-stamp">'.$stamp.'</p>
+                </div>';
+                $data .= "<p class = 'blog-comment-text'>".$r['Text']."</p>";
+                if($r['file']) {
+                    $presentor = 'data:image/jpeg;base64,'.base64_encode($r['file']);
+                    $data .= '<div class = "file-container"><div class = "file" style = "background-image: url(\''.$presentor.'\')"></div></div>';
+                }
+                $data .= "</div>";
+            }
+        }
+        
 
         $c = null; //close connection
         return $data;
@@ -177,6 +259,11 @@
         $s -> execute();
         $data = "";
         while($r = $s -> fetch(PDO::FETCH_ASSOC)) {
+            $sqlb = "SELECT COUNT(*) FROM Likes WHERE Comment_ID = ".$r['ID'].";";
+            $sb = $c -> prepare($sqlb);
+            $sb -> execute();
+            if($rb = $sb -> fetch(PDO::FETCH_ASSOC)) $likes = $rb ['COUNT(*)'];
+            else $likes = 0;
             $stamp = miltoregtime(substr($r['Stamp'], 11, 5))."&ensp;&ensp;&ensp;".$months[intval(substr($r['Stamp'], 5, 2))-1]." ".substr($r['Stamp'], 8, 2).", ".substr($r['Stamp'], 0, 4);
             $data .= "<div class = 'blog-comment gillsans'>";
             $data .= "<p class = 'time-stamp'>".$stamp."</p>";
