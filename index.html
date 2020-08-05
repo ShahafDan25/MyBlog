@@ -48,7 +48,7 @@
             <a class = "sidebar-option" href = "https://twitter.com/shahaf_dan"> Twitter </a>
         </div>
         <div class = "container container-without-sidebar inline" id = "container">
-            <hr>
+            
             <div class = "blog" id = "blog">
                 <!-- TO BE POPULATED WITH PHP -->
             </div>
@@ -69,7 +69,7 @@
         </div>
     </body>
     <footer>
-        #100DaysOfCode
+        #MindsetGrowth
     </footer>
     <script>
         $(document).ready(function() {
@@ -95,16 +95,26 @@
                     postid: id
                 },
                 success: function(data) {
-                    console.log("likePost: " + data);
                     if($.trim(data) == "notfound") {
                         document.getElementById("register-form").style.display = "block";
                         //create account
                         register(id);
                     }
                     else {
-                        $("#like-icon-"+id).toggleClass("fa-heart-o");
-                        $("#like-icon-"+id).toggleClass("fa-heart");
-                        alertify.success("Welcome " + data + "!");
+                        // alertify.success("Welcome " + data + "!");
+                        $.ajax({
+                            type: "POST",
+                            url: "main.php",
+                            data: {
+                                message: "update-likes-amount",
+                                postid: id
+                            },
+                            success: function(data) {
+                                $("#likes-label-" + id).html(data);
+                                $("#like-icon-"+id).toggleClass("fa-heart-o");
+                            $("#like-icon-"+id).toggleClass("fa-heart");
+                            }
+                        });    
                     }
                 }
             });
@@ -131,8 +141,11 @@
                             post: id
                         },
                         success: function(data) {
-                            console.log("register:" + data);
-                            if($.trim(data) == "true") alertify.success("Success!");
+                            if($.trim(data) == "true") {
+                                $("#like-icon-"+id).toggleClass("fa-heart-o");
+                                $("#like-icon-"+id).toggleClass("fa-heart");
+                                alertify.success("Welcome, " + $("#register-first-name").val());
+                            }
                             else if($.trim(data) == "false") {
                                 alertify.message ("PIN taken").ondismiss = function() {
                                     $("#register-pin").val() = "";

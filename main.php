@@ -107,24 +107,36 @@
     }
 
     if($_POST['message'] == "check-login-cookie") {
-        if(!isset($_COOKIE["user"])) echo "notfound";
+        if(!isset($_COOKIE["shahafster-user-firstname"])) echo "notfound";
         else echo likePost($_POST['postid']);
     }
 
+    if($_POST['message'] == "update-likes-amount") {
+        $c = connDB();
+        $sqlb = "SELECT COUNT(*) FROM Likes WHERE Comment_ID = ".$_POST['postid'].";";
+        $sb = $c -> prepare($sqlb);
+        $sb -> execute();
+        if($rb = $sb -> fetch(PDO::FETCH_ASSOC)) $likes = $rb ['COUNT(*)'];
+        else $likes = 0;
+        echo $likes;
+    }
+
     function likePost($postid) {
-        $sqlb = "SELECT Stamp FROM Likes WHERE Comment_ID = ".$postid." AND Visitors_ID = ".$_COOKIE['user'][2]." AND Visitors_FirstName = '".$_COOKIE["user"][0]."' AND Visitors_LastName = '".$_COOKIE['user'][1]."';";
+        $c = connDB(); // set database connection
+        $sqlb = "SELECT Stamp FROM Likes WHERE Comment_ID = ".$postid." AND Visitors_ID = ".$_COOKIE['shahafster-user-id']." AND Visitors_FirstName = '".$_COOKIE["shahafster-user-firstname"]."' AND Visitors_LastName = '".$_COOKIE["shahafster-user-lastname"]."';";
         $sb = $c -> prepare($sqlb);
         $sb -> execute();
         if($rb = $sb -> fetch(PDO::FETCH_ASSOC)) { //unlike
-            $sql = "DELETE FROM Likes WHERE Comment_ID = ".$postid." AND Visitors_ID = ".$_COOKIE['user'][2]." AND Visitors_FirstName = '".$_COOKIE["user"][0]."' AND Visitors_LastName = '".$_COOKIE['user'][1]."';";
+            $sql = "DELETE FROM Likes WHERE Comment_ID = ".$postid." AND Visitors_ID = ".$_COOKIE['shahafster-user-id']." AND Visitors_FirstName = '".$_COOKIE["shahafster-user-firstname"]."' AND Visitors_LastName = '".$_COOKIE["shahafster-user-lastname"]."';";
             $c -> prepare($sql) -> execute();
         }
         else { //like
-            $sql = "INSERT INTO Likes (Comment_ID, Visitors_ID, Visitors_LastName, Visitors_FirstName, Stamp) VALUES (".$postid.", ".$_COOKIE["user"][2].", '".$_COOKIE["user"][0]."', '".$_COOKIE["user"][1]."', NOW());";
+            $sql = "INSERT INTO Likes (Comment_ID, Visitors_ID, Visitors_LastName, Visitors_FirstName, Stamp) VALUES (".$postid.", ".$_COOKIE["shahafster-user-id"].", '".$_COOKIE["shahafster-user-lastname"]."', '".$_COOKIE["shahafster-user-firstname"]."', NOW());";
             $c -> setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $c -> exec($sql);
         }
-        return $_COOKIE["user"][0];
+        $c = null; //close connection
+        return $_COOKIE["shahafster-user-firstname"];
     }
 
     function setAccount($first, $last, $pin, $postid) {
@@ -132,16 +144,18 @@
         $sql = "SELECT Stamp FROM Visitors WHERE ID = ".$pin." AND FirstName = '".$first."' AND LastName = '".$last."';"; 
         $s = $c -> prepare($sql);
         $s -> execute();
-        if($s - fetch(PDO::FETCH_ASSOC)) return "false";
+        if($s -> fetch(PDO::FETCH_ASSOC)) return "false";
         else {
-            $sql = "INSERT INTO Visitors (ID, FirstName, LastName, Stapm) VALUES (".$pin.", '".$first."', '".$last."'. NOW()):";
+            $sql = "INSERT INTO Visitors (ID, FirstName, LastName, Stamp) VALUES (".$pin.", '".$first."', '".$last."', NOW());";
             $c -> setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $c -> exec($sql);
-            $sql = "INSERT INTO Likes (Comment_ID, Visitors_ID, Visitors_LastName, Visitors_FirstName, Stamp) VALUES (".$postid.", ".$pin.", '".$first."', '".$last."', NOW());";
+            $sql = "INSERT INTO Likes (Comment_ID, Visitors_ID, Visitors_LastName, Visitors_FirstName, Stamp) VALUES (".$postid.", ".$pin.", '".$last."', '".$first."', NOW());";
             $c -> setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $c -> exec($sql);
-            $cookiedata = array($first, $last, $pin);
-            setcookie("user", $cookiedata, time() + 60*60*24*365*25); //set cookie to 25 years
+            // $cookiedata = array($first, $last, $pin);
+            setcookie("shahafster-user-id", $pin, time() + 60*60*24*365*25); //set cookie to 25 years
+            setcookie("shahafster-user-firstname", $first, time() + 60*60*24*365*25); //set cookie to 25 years
+            setcookie("shahafster-user-lastname", $last, time() + 60*60*24*365*25); //set cookie to 25 years
         }
         $c = null; //close connection
         return "true";
@@ -154,14 +168,14 @@
         $s = $c -> prepare($sql);
         $s -> execute();
         $data = "";
-        if(isset($_COOKIE["user"])) {
+        if(isset($_COOKIE["shahafster-user-firstname"])) {
             while($r = $s -> fetch(PDO::FETCH_ASSOC)) {
                 $sqlb = "SELECT COUNT(*) FROM Likes WHERE Comment_ID = ".$r['ID'].";";
                 $sb = $c -> prepare($sqlb);
                 $sb -> execute();
                 if($rb = $sb -> fetch(PDO::FETCH_ASSOC)) $likes = $rb ['COUNT(*)'];
                 else $likes = 0;
-                $sqlb = "SELECT Stamp FROM Likes WHERE Comment_ID = ".$r['ID']." AND Visitors_ID = ".$_COOKIE['user'][2]." AND Visitors_FirstName = '".$_COOKIE["user"][0]."' AND Visitors_LastName = '".$_COOKIE['user'][1]."';";
+                $sqlb = "SELECT Stamp FROM Likes WHERE Comment_ID = ".$r['ID']." AND Visitors_ID = ".$_COOKIE['shahafster-user-id']." AND Visitors_FirstName = '".$_COOKIE["shahafster-user-firstname"]."' AND Visitors_LastName = '".$_COOKIE["shahafster-user-lastname"]."';";
                 $sb = $c -> prepare($sqlb);
                 $sb -> execute();
                 if($rb = $sb -> fetch(PDO::FETCH_ASSOC)) $iconclass = "fa-heart";
@@ -180,12 +194,12 @@
                     </div>
                     <p class = "time-stamp">'.$stamp.'</p>
                 </div>';
-                $data .= "<p class = 'blog-comment-text'>".$r['Text']."</p>";
+                $data .= "<div class = 'content'><p class = 'blog-comment-text'>".$r['Text']."</p>";
                 if($r['file']) {
                     $presentor = 'data:image/jpeg;base64,'.base64_encode($r['file']);
                     $data .= '<div class = "file-container"><div class = "file" style = "background-image: url(\''.$presentor.'\')"></div></div>';
                 }
-                $data .= "</div>";
+                $data .= "</div></div>";
             }
         }
         else {
@@ -209,12 +223,12 @@
                     </div>
                     <p class = "time-stamp">'.$stamp.'</p>
                 </div>';
-                $data .= "<p class = 'blog-comment-text'>".$r['Text']."</p>";
+                $data .= "<div class = 'content'><p class = 'blog-comment-text'>".$r['Text']."</p>";
                 if($r['file']) {
                     $presentor = 'data:image/jpeg;base64,'.base64_encode($r['file']);
                     $data .= '<div class = "file-container"><div class = "file" style = "background-image: url(\''.$presentor.'\')"></div></div>';
                 }
-                $data .= "</div>";
+                $data .= "</div></div>";
             }
         }
         
@@ -291,4 +305,14 @@
         $c = null; //forget connection...
         echo $r['Text'];
     }
+
+    // TODO: Fix Time Stamos displayal
+    // TODO: UI SideBar change
+    // TODO: Display name of whoever is signed in
+    // TODO: ReTweet Button, connect to twitter
+    // TODO: Create pages (to slow load time)
+    // TODO: Restyle the manage posts section so it has an upper bar too:
+        // TODO: in tht upper bar, by clicking the likes button you can see who liked that post
+        // TODO: also options to edit file, add file, remove file, edit bitmoji, edit text, de/reactivate post
+    // TODO: text in label for input file
 ?>
