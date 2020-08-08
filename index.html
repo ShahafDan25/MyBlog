@@ -112,7 +112,7 @@
                             success: function(data) {
                                 $("#likes-label-" + id).html(data);
                                 $("#like-icon-"+id).toggleClass("fa-heart-o");
-                            $("#like-icon-"+id).toggleClass("fa-heart");
+                                $("#like-icon-"+id).toggleClass("fa-heart");
                             }
                         });    
                     }
@@ -142,8 +142,9 @@
                         },
                         success: function(data) {
                             if($.trim(data) == "true") {
-                                $("#like-icon-"+id).toggleClass("fa-heart-o");
-                                $("#like-icon-"+id).toggleClass("fa-heart");
+                                // $("#like-icon-"+id).toggleClass("fa-heart-o");
+                                // $("#like-icon-"+id).toggleClass("fa-heart");
+                                likePost(id);
                                 alertify.success("Welcome, " + $("#register-first-name").val());
                             }
                             else if($.trim(data) == "false") {

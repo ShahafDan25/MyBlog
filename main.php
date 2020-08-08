@@ -121,6 +121,36 @@
         echo $likes;
     }
 
+    if($_POST['message'] == "display-users") {
+        echo displayManageUsers();
+    }
+
+    function displayManageUsers(){
+        $c = connDB(); //set connection
+        
+        $data = '';
+        $sql = "SELECT ID, FirstName, LastName, Stamp FROM Visitors ORDER BY FirstName, LastName;";
+        $s = $c -> prepare($sql);
+        $s -> execute();
+        while($r = $s -> fetch(PDO::FETCH_ASSOC)) {
+            $stamp = miltoregtime(substr($r['Stamp'], 11, 5))."&ensp;&ensp;&ensp;".$months[intval(substr($r['Stamp'], 5, 2))-1]." ".substr($r['Stamp'], 8, 2).", ".substr($r['Stamp'], 0, 4);
+            $data .= '
+                <div class = "user-row">
+                    <button class = "user-action action-a"><i class = "fa fa-times"></i></button>
+                    <button class = "user-action action-b"><i class = "fa fa-power"></i></button>
+                    <button class = "user-action action-c"><i class = "fa fa-heart"></i></button>
+                    <p> '.$r['ID'].' </p>
+                    <h3><strong>'.$r['FirstName'].' '.$r['LastName'].'</strong></h3>
+                    <p class = "stamp"> '.$stamp.' </p>
+                </div>';
+        }
+        $begin = '';
+        
+        $c = null; //close connection
+        if(strlen($data) < 2) return "No Users Found...";
+        else return $begin.$data;
+    }
+
     function likePost($postid) {
         $c = connDB(); // set database connection
         $sqlb = "SELECT Stamp FROM Likes WHERE Comment_ID = ".$postid." AND Visitors_ID = ".$_COOKIE['shahafster-user-id']." AND Visitors_FirstName = '".$_COOKIE["shahafster-user-firstname"]."' AND Visitors_LastName = '".$_COOKIE["shahafster-user-lastname"]."';";
@@ -315,4 +345,7 @@
         // TODO: in tht upper bar, by clicking the likes button you can see who liked that post
         // TODO: also options to edit file, add file, remove file, edit bitmoji, edit text, de/reactivate post
     // TODO: text in label for input file
+    // TODO: On server: inputs are too long in registration form,
+    // TODO: On server, label does not update when liked post (when registering, not when already registered)
+    // TODO: on desk top, increase both height and width a bit of pictures
 ?>

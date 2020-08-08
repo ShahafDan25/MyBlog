@@ -18,11 +18,29 @@ function slideSidebar() {
 function addComments() {
     document.getElementById("add-comment-div").style.display = "block";
     document.getElementById("manage-comment-div").style.display = "none";
+    document.getElementById("manage-users-div").style.display = "none";
 }
 
 function manageComments() {
     document.getElementById("add-comment-div").style.display = "none";
     document.getElementById("manage-comment-div").style.display = "block";
+    document.getElementById("manage-users-div").style.display = "none";
+}
+
+function manageUsers() {
+    document.getElementById("add-comment-div").style.display = "none";
+    document.getElementById("manage-comment-div").style.display = "none";
+    document.getElementById("manage-users-div").style.display = "block";
+    $.ajax({
+        type: "POST",
+        url: "main.php",
+        data: {
+            message: "display-users"
+        },
+        success: function(data) {
+            $("#users-to-manage").html(data);
+        }
+    });
 }
 
 function deactiavte(id) {

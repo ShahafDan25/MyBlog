@@ -38,7 +38,8 @@
         <div class = "sidebar inline" id = "sidebar">
             <a class = "sidebar-option" onclick = "slideSidebar();"> Close </a>
             <a class = "sidebar-option" onclick = "addComments();" > Add </a>
-            <a class = "sidebar-option" onclick = "manageComments();" > Manage </a>
+            <a class = "sidebar-option" onclick = "manageComments();" > Comments </a>
+            <a class = "sidebar-option" onclick = "manageUsers();" > Users </a>
             <a class = "sidebar-option" id = "header-add-page-change-pw-btn" > Password </a>
         </div>
         <div class = "container container-without-sidebar" id = "container">
@@ -218,6 +219,12 @@
                     <!-- TO BE POPULATED -->
                 </div>
             </div>
+            <div class = "manage-users-div" id = "manage-users-div" style = "display: none;">
+                <h1 class = 'add-to-blog-title-text'> <u> Manage Blog Comments </u></h1>
+                <div id = "users-to-manage">
+                    <!-- TO BE POPULATED -->
+                </div>
+            </div>
         </div>     
     </body>
     <footer>
@@ -282,7 +289,6 @@
         });
 
         function promptPassword(oldpw, title) {
-            console.log(oldpw);
             if(oldpw == "cookiefound") alertify.success("Welcome!"); //WELCOME
             else {
                 alertify.prompt (
