@@ -126,6 +126,7 @@
     }
 
     function displayManageUsers(){
+        $months = ["January", "February", "March", "April", "May", " June", "July", "August", "September", "October", "November", "December"];
         $c = connDB(); //set connection
         
         $data = '';
@@ -139,8 +140,8 @@
                     <button class = "user-action action-a"><i class = "fa fa-times"></i></button>
                     <button class = "user-action action-b"><i class = "fa fa-power"></i></button>
                     <button class = "user-action action-c"><i class = "fa fa-heart"></i></button>
-                    <p> '.$r['ID'].' </p>
-                    <h3><strong>'.$r['FirstName'].' '.$r['LastName'].'</strong></h3>
+                    <p class = "user-id"> '.$r['ID'].' </p>
+                    <h3 class = "user-name"><strong>'.$r['FirstName'].' '.$r['LastName'].'</strong></h3>
                     <p class = "stamp"> '.$stamp.' </p>
                 </div>';
         }
@@ -200,11 +201,13 @@
         $data = "";
         if(isset($_COOKIE["shahafster-user-firstname"])) {
             while($r = $s -> fetch(PDO::FETCH_ASSOC)) {
+                //get number of likes
                 $sqlb = "SELECT COUNT(*) FROM Likes WHERE Comment_ID = ".$r['ID'].";";
                 $sb = $c -> prepare($sqlb);
                 $sb -> execute();
                 if($rb = $sb -> fetch(PDO::FETCH_ASSOC)) $likes = $rb ['COUNT(*)'];
                 else $likes = 0;
+                //get if current user likes it or not
                 $sqlb = "SELECT Stamp FROM Likes WHERE Comment_ID = ".$r['ID']." AND Visitors_ID = ".$_COOKIE['shahafster-user-id']." AND Visitors_FirstName = '".$_COOKIE["shahafster-user-firstname"]."' AND Visitors_LastName = '".$_COOKIE["shahafster-user-lastname"]."';";
                 $sb = $c -> prepare($sqlb);
                 $sb -> execute();
@@ -345,7 +348,9 @@
         // TODO: in tht upper bar, by clicking the likes button you can see who liked that post
         // TODO: also options to edit file, add file, remove file, edit bitmoji, edit text, de/reactivate post
     // TODO: text in label for input file
-    // TODO: On server: inputs are too long in registration form,
-    // TODO: On server, label does not update when liked post (when registering, not when already registered)
-    // TODO: on desk top, increase both height and width a bit of pictures
+    // TODO: add option to enter ' in my posts
+    // TODO : Display in manage comments who liked that comment
+    // TODO: xxxx On server: inputs are too long in registration form,
+    // TODO: xxxx On server, label does not update when liked post (when registering, not when already registered)
+    // TODO: xxxx on desk top, increase both height and width a bit of pictures
 ?>

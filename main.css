@@ -459,7 +459,6 @@ header {
 
 .manage-users-div .users-to-manage .user-row {
     display: inline-flex;
-    width: 95%;
     text-align: center;
     justify-content: space-evenly;
     align-items: baseline;
@@ -467,29 +466,35 @@ header {
 .manage-users-div .users-to-manage .user-row .user-action {
     border: none;
     border-radius: 4px;
-    opacity: 0.9;
+    /* opacity: 0.9; */
+    padding: 1%;
     transition: 0.2s ease-in-out;
     color: #191919;
     flex: 1;
 }
-.manage-users-div .users-to-manage .user-row .option-a {
-    background-color: rgb(255, 108, 108);   
+.manage-users-div .users-to-manage .user-row .action-a {
+    background-color: rgb(255, 108, 108) !important;   
 }
-.manage-users-div .users-to-manage .user-row .option-b {
+.manage-users-div .users-to-manage .user-row .action-b {
     background-color: rgb(255, 247, 132);
 }
-.manage-users-div .users-to-manage .user-row .option-c {
+.manage-users-div .users-to-manage .user-row .action-c {
     background-color: rgb(102, 124, 246);
     color: red !important;
 }
-.manage-users-div .users-to-manage .user-row h3 {
-    flex: 10;
+.manage-users-div .users-to-manage .user-row .user-name {
+    flex: 20;
+    text-align: left;
+    margin: 0px;
 }
 .manage-users-div .users-to-manage .user-row p {
-    flex: 2;
+    margin: 0px;
 }
 .manage-users-div .users-to-manage .user-row .stamp {
-    color: gray;
+    flex: auto;
+}
+.manage-users-div .users-to-manage .user-row .stamp {
+    color: #606060;
     font-size: 85%;
 }
 
