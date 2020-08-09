@@ -462,15 +462,19 @@ header {
     text-align: center;
     justify-content: space-evenly;
     align-items: baseline;
+    width: 95%;
+    font-family: "Gill Sans";
 }
 .manage-users-div .users-to-manage .user-row .user-action {
     border: none;
     border-radius: 4px;
     /* opacity: 0.9; */
-    padding: 1%;
+    padding: 0.75%;
     transition: 0.2s ease-in-out;
     color: #191919;
     flex: 1;
+    font-size: 115%;
+    margin-right: 1%;
 }
 .manage-users-div .users-to-manage .user-row .action-a {
     background-color: rgb(255, 108, 108) !important;   
@@ -483,54 +487,128 @@ header {
     color: red !important;
 }
 .manage-users-div .users-to-manage .user-row .user-name {
-    flex: 20;
+    flex: 30;
     text-align: left;
     margin: 0px;
-}
-.manage-users-div .users-to-manage .user-row p {
-    margin: 0px;
+    margin-left: 2%;
 }
 .manage-users-div .users-to-manage .user-row .stamp {
-    flex: auto;
+    flex: 7;
+    margin: 0px;
+    margin-left: 1%;
 }
 .manage-users-div .users-to-manage .user-row .stamp {
     color: #606060;
     font-size: 85%;
 }
 
+
 /* ------------------ MANAGE COMMENTS PAGE ---------------------- */
-.action-btn {
-    width: auto;
-    padding: 0.8%;
-    font-size: 90%;
-    border-radius: 150px;
-    border: none;
-    margin-right: 1%;
-    margin-top: 0.5%;
-    color: #E0E0E0;
-}
-.edit-btn {
-    background-color: #7C9AFF;
-    font-family: "Gill Sans";
-}
-.deactivate-btn {
-    background-color: rgb(255, 122, 122);
-    font-family: "Gill Sans";
-}
-.activate-btn {
-    background-color: #01FF70;
-    font-family: "Gill Sans";
-}
-.action-btns-div {
-    width: auto;
-    /* float: right; */
-    /* margin-right: 5%; */
-}
-.comments-to-manage {
-    width: 100%;
+.blog-comment-manage {
+    text-align: center;
     font: "Gill Sans";
     display: block;
+    width: 100%;
 }
+.blog-comment-manage .upper {
+    display: inline-flex;
+    justify-content: space-evenly;
+    align-items: flex-end;
+    width: 90%;
+}
+.blog-comment-manage .upper .action-btn {
+    flex: 1;
+    margin-left: 0.35%;
+    margin-right: 0.35%;
+    padding: 0.65%;
+    font-size: 90%;
+    border-radius: 5px;
+    border: none;
+    color: #E0E0E0;
+    /* border: 3px solid #E0E0E0; */
+    box-sizing: border-box;
+    box-shadow: 2px 2px 4px #191919;
+}
+.blog-comment-manage .upper .action-btn.option-1a {
+    background-color: rgb(255, 77, 77);
+}
+.blog-comment-manage .upper .action-btn.option-1b {
+    background-color: rgb(108, 255, 177);
+    color: #191919;
+}
+.blog-comment-manage .upper .action-btn.option-2 {
+    background-color: rgb(255, 247, 132);
+    color: #303030;
+}
+.blog-comment-manage .upper .action-btn.option-3 {
+    background-color: rgb(102, 124, 246);
+    color: red;
+    display: inline-flex;
+    align-items: baseline;
+    justify-content: space-evenly;
+}
+.blog-comment-manage .upper .action-btn.option-3 i {
+    flex: 1;
+}
+.blog-comment-manage .upper .action-btn.option-3 p {
+    color: #212121;
+    font-size: 110%;
+    margin: 0px;
+    flex: 1;
+    text-align: right;
+}
+.blog-comment-manage .upper .emoji {
+    flex: 1;
+    font-size: 170%;
+    margin: 0px 0.75% 0px 1.75%
+}
+.blog-comment-manage .upper .stamp {
+    text-align: right;
+    flex: 31;
+    margin-left: 3%;
+    margin: 0px 0px 0px 3%;
+    color: #606060;
+    font-size: 80%;
+    font-family: "Gill Sans";
+}
+.blog-comment-manage .lower {
+    display: inline-flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    width: 90%;
+    margin: 0.75% 0% 1.25% 0%;
+}
+.blog-comment-manage .lower .file-container {
+    text-align: left;
+    margin: 5px 2% 5px 4%;
+}
+.blog-comment-manage .lower .file-container .file {
+    height: 170px;
+    background-size: cover;
+    z-index: 10;
+    position: static;
+    display: block;
+    width: 120px;
+    border-radius: 3px;
+    box-shadow: 2px 2px 5px #606060;
+}
+.blog-comment-manage .lower .text {
+    flex: 7;
+    text-align: left;
+    margin: 0px;
+    margin-left: 2%;
+}
+.blog-comment-manage .lower .user-tow-likes {
+    max-height: 0;
+    overflow: hidden;
+    transition: 0.2s ease-in-out;
+    text-align: left;
+    padding-left: 3%;
+    flex: 2;
+}
+
+
+
 .matrix {
     width: 100%;
     border-collapse: collapse;
@@ -556,6 +634,8 @@ header {
 th {
     font-weight: 900;
 }
+
+
 
 /* ------------------ SMALLER MEDIA SIZES ---------------------- */
 @media (max-width: 1100px) {

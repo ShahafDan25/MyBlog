@@ -220,12 +220,18 @@
                 </div>
             </div>
             <div class = "manage-users-div" id = "manage-users-div" style = "display: none;">
-                <h1 class = 'add-to-blog-title-text'> <u> Manage Blog Comments </u></h1>
+                <h2 class = 'add-to-blog-title-text'> <u> Manage Users </u></h2>
                 <div id = "users-to-manage" class = "users-to-manage">
                     <!-- TO BE POPULATED -->
                 </div>
             </div>
-        </div>     
+        </div>  
+        <form id = "edit-comment-form">
+            <h3> Edit Comment </h3>
+            <textarea id = "edit-comment-form-textarea">
+                <!-- TO BE POPULATED -->
+            </textarea>
+        </form>   
     </body>
     <footer>
         Shahaf Dan Productions
@@ -287,96 +293,6 @@
                 }
             });
         });
-
-        function promptPassword(oldpw, title) {
-            if(oldpw == "cookiefound") alertify.success("Welcome!"); //WELCOME
-            else {
-                alertify.prompt (
-                    title, 
-                    "To post a blog message you need the Shahafster's Passowrd", 
-                    "",
-                    function(event, value){
-                        if(value == oldpw)  {
-                            // add cookie for loging in
-                            $.ajax({
-                                type: "POST",
-                                url: "main.php",
-                                data: {
-                                    message: "login-cookie-start"
-                                },
-                                success: function(data) {
-                                    if($.trim(data) == "true") alertify.success("Welcome!"); //WELCOME
-                                }
-                            }); 
-                        }
-                        else {
-                            alertify.error("Wrong Password!").ondismiss = function() {
-                                promptPassword(oldpw, "Wrong Password...");
-                            }
-                        }
-                    },
-                    function() {
-                        alertify.message("Goodbye...").ondismiss = function() {
-                            location.replace("index.html");
-                        }
-                    }
-                );
-            }
-        }
-
-        // $("#add-blog-comment-form").submit(function(e){
-        //     e.preventDefault();
-        //     var options = document.getElementsByName("rating-option");
-        //     var chosenOne = "checkerVariable";
-        //     for(var i = 0; i < options.length; i++) {
-        //         if(options[i].checked) chosenOne = options[i].value;
-        //     }
-        //     if(chosenOne == "checkerVariable") alertify.warning("Please Choose an Emoji");
-        //     else{
-        //         $.ajax({
-        //             type: "POST",
-        //             url: "main.php",
-        //             data: {
-        //                 message: "add-blog-comment",
-        //                 rating: chosenOne,
-        //                 content: document.getElementById("comment-text").value
-        //             },
-        //             success: function(data) {
-        //                 alertify.success("Comment Added!");
-        //                 cleanNewCommentInputs();
-        //             }
-        //         });
-        //     } 
-        // });
-        
-        function cleanNewCommentInputs() {
-            var options = document.getElementsByName("rating-option");
-            document.getElementById("comment-text").value = "";
-            for(var i = 0; i < options.length; i++) {
-                options[i].checked = false;
-            }
-            document.getElementById("attachment").value = "";
-        }
-
-        function likeComment(id) {
-            document.getElementById("liked-"+id).style.display = "inline-block";
-            document.getElementById("not-liked-"+id).style.display = "none";
-            // alertify.confirm(
-            //     "To liked this comment...",
-            //     "you will need to enter your name and email address"
-            // );
-            $.ajax({
-                type: "POST",
-                utl: "main.php",
-                data: {
-                    message: "add-like",
-                    iden: id
-                },
-                success: function(data) {
-                    $("#amount-likes").html(data);
-                }
-            });
-        }
     
         $("#attachment").change(function() {
             if(document.getElementById("attachment").value == "") {

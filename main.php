@@ -22,12 +22,7 @@
     }
 
     if($_POST['message'] == "edit-comment") {
-        $c = connDB(); //set connection
-        $sql = "UPDATE BlogComments SET Text = '".$_POST['comment']."' WHERE ID = ".$_POST['commentid'].";";
-        $c -> prepare($sql) -> execute();
-
-        $c = null; //forget connection
-        echo populateManagementTable();
+        echo editComment($_POST['comment'], $_POST['commentid']);
     }
 
     if($_POST['message'] == "populate-comments-tomanage") {
@@ -125,6 +120,61 @@
         echo displayManageUsers();
     }
 
+    if($_POST['message'] == "populate-post-likes") {
+        // echo populateBlogLikes($_POST['postid']);
+        echo "code messed up.... too lazy to fix atm";
+    }
+
+    if($_POST['message'] == "delete-user") {
+        deleteUser($_POST['userid'], $_POST['first'], $_POST['last']);
+    }
+
+    function deleteUser($id, $first, $last) {
+        $c = connDB(); // set connection
+
+        $sql = "DELETE FROM Likes WHERE Visitors_ID = ".$id." AND Visitors_FirstName = ".$first." AND Visitors_LastName = ".$last.";";
+        $sql .= "DELETE FROM Visitors WHERE ID = ".$id." AND FirstName = ".$first." AND LastName = ".$last.";";
+        try {   
+            $c -> prepare($sql) -> execute();
+        } catch(PDOException $e) {
+            return "false";
+        }
+        $c = null; //close connection
+        return "true";
+    }
+
+    function editComment($comment, $id) {
+        $c = connDB(); //set connection
+        $sql = "UPDATE BlogComments SET Text = '".$comment."' WHERE ID = ".$id.";";
+        $c -> prepare($sql) -> execute();
+        $c = null; //forget connection
+        return $comment;
+    }
+
+    function populateBlogLikes($postid) {
+        $c = connDB(); //set connection
+
+        $sql = "SELECT * FROM Likes WHERE Comment_ID = ".$postid.";";
+        try {
+            $s = $c -> prepare($sql);
+            $s -> execute();
+            $data = '';
+            $found = false;
+            while($r = $s -> fetch(PDO::FETCH_ASSOC)) {
+                $stamp = miltoregtime(substr($r['Stamp'], 11, 5))."&ensp;&ensp;&ensp;".$months[intval(substr($r['Stamp'], 5, 2))-1]." ".substr($r['Stamp'], 8, 2).", ".substr($r['Stamp'], 0, 4);
+                $data .= '<h5 class = "user-who-liked"> '.$r['FirstName'].' '.$r['LastName'].' | @ '.$stamp.' </h5>';
+            }
+
+        } catch(PDOException $e) {
+            return "false";
+        }
+        
+        if($found) return  "Nobody liked this post yet...";
+        $c = null; ///close connection
+        return $data;
+    }
+
+    /// STILL NOT SURE WHAT TODO WITH THIS ONE
     function displayManageUsers(){
         $months = ["January", "February", "March", "April", "May", " June", "July", "August", "September", "October", "November", "December"];
         $c = connDB(); //set connection
@@ -137,13 +187,15 @@
             $stamp = miltoregtime(substr($r['Stamp'], 11, 5))."&ensp;&ensp;&ensp;".$months[intval(substr($r['Stamp'], 5, 2))-1]." ".substr($r['Stamp'], 8, 2).", ".substr($r['Stamp'], 0, 4);
             $data .= '
                 <div class = "user-row">
-                    <button class = "user-action action-a"><i class = "fa fa-times"></i></button>
-                    <button class = "user-action action-b"><i class = "fa fa-power"></i></button>
+                    <button class = "user-action action-a" onclick = "deleteUser('.$r['ID'].');"><i class = "fa fa-times"></i></button>
+                    <button class = "user-action action-b" onclick = ""><i class = "fa fa-power-off"></i></button>
                     <button class = "user-action action-c"><i class = "fa fa-heart"></i></button>
-                    <p class = "user-id"> '.$r['ID'].' </p>
-                    <h3 class = "user-name"><strong>'.$r['FirstName'].' '.$r['LastName'].'</strong></h3>
+                    <h3 class = "user-name"><strong>'.$r['FirstName'].' '.$r['LastName'].'</strong> &emsp;&emsp; [ '.$r['ID'].' ]</h3>
                     <p class = "stamp"> '.$stamp.' </p>
-                </div>';
+                    <input type = "hidden" id = "user-manage-info-firstname-'.$r['ID'].'" value = "'.$r['FirstName'].'">
+                    <input type = "hidden" id = "user-manage-info-lastname-'.$r['ID'].'" value = "'.$r['LastName'].'">
+                </div>
+                ';
         }
         $begin = '';
         
@@ -312,18 +364,32 @@
             if($rb = $sb -> fetch(PDO::FETCH_ASSOC)) $likes = $rb ['COUNT(*)'];
             else $likes = 0;
             $stamp = miltoregtime(substr($r['Stamp'], 11, 5))."&ensp;&ensp;&ensp;".$months[intval(substr($r['Stamp'], 5, 2))-1]." ".substr($r['Stamp'], 8, 2).", ".substr($r['Stamp'], 0, 4);
-            $data .= "<div class = 'blog-comment gillsans'>";
-            $data .= "<p class = 'time-stamp'>".$stamp."</p>";
-            $data .= "<p class = 'blog-comment-text'>";
-            $data .= "<button class = 'action-btn edit-btn' onclick = 'allow_edit(".$r['ID'].")';><i class = 'fa fa-pencil'></i></button>";
-            if($r['active'] == 1) $data .= "<button class = 'action-btn deactivate-btn' onclick = 'deactiavte(".$r['ID'].")'><i class = 'fa fa-power-off'></i></button>";
-            else $data .= "<button class = 'action-btn activate-btn' onclick = 'activate(".$r['ID'].")'><i class = 'fa fa-power-off'></i></button>";
-            $data .= "&#".$r['FeelingRate']."&emsp;&emsp;".$r['Text']."</p>";
-            if($r['file']) {
-                $presentor = 'data:image/jpeg;base64,'.base64_encode($r['file']);
-                $data .= '<div class = "file-container"><div class = "file" style = "background-image: url(\''.$presentor.'\')"></div></div>';
+            if($r['file']) $image = '<div class = "file-container"><div class = "file" style = "background-image: url(\'data:image/jpeg;base64,'.base64_encode($r['file']).'\')"></div></div>';
+            else $image = '';
+            if($r['active'] == 1) {
+                $activatecss = 'option-1a'; //currently active
+                $activateonclick = 'deactiavte('.$r['ID'].')';
+            } 
+            else {
+                $activatecss = 'option-1b'; //deacitavted currently
+                $activateonclick = 'actiavte('.$r['ID'].')';
             }
-            $data .= "</div>"; //comment div
+            $data .= '
+                <div class = "blog-comment-manage">
+                    <div class = "upper">
+                        <button class = "action-btn '.$activatecss.'" onclick = "'.$activateonclick.'"><i class = "fa fa-power-off"></i></button>
+                        <button class = "action-btn option-2" onclick = "allow_edit('.$r['ID'].');"><i class = "fa fa-pencil"></i></button>
+                        <button class = "action-btn option-3"><i class = "fa fa-heart"></i> <p>'.$likes.'</p></button>
+                        <p class = "emoji"> &#'.$r['FeelingRate'].'</p>
+                        <p class = "stamp">'.$stamp.'</p>
+                    </div>
+                    <div class = "lower">
+                        '.$image.'
+                        <p class = "text" id = "manage-commet-text-'.$r['ID'].'"> '.$r['Text'].' </p>
+                        <div class = "user-row-likes" id = "user-likes-'.$r['ID'].'"></div>
+                    </div>
+                </div>
+            ';
         }
         $c = null; //close connection
         echo $data; //to populate with ajax
@@ -341,6 +407,7 @@
 
     // TODO: Fix Time Stamos displayal
     // TODO: UI SideBar change
+    // TODO: Add a login form
     // TODO: Display name of whoever is signed in
     // TODO: ReTweet Button, connect to twitter
     // TODO: Create pages (to slow load time)
@@ -350,7 +417,5 @@
     // TODO: text in label for input file
     // TODO: add option to enter ' in my posts
     // TODO : Display in manage comments who liked that comment
-    // TODO: xxxx On server: inputs are too long in registration form,
-    // TODO: xxxx On server, label does not update when liked post (when registering, not when already registered)
-    // TODO: xxxx on desk top, increase both height and width a bit of pictures
+    // TODO: search bar
 ?>
