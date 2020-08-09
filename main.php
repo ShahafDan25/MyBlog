@@ -284,7 +284,7 @@
                     </div>
                     <p class = "time-stamp">'.$stamp.'</p>
                 </div>';
-                $data .= "<div class = 'content'><p class = 'blog-comment-text'>".$r['Text']."</p>";
+                $data .= "<div class = 'content'><p class = 'blog-comment-text'>".tagRecognize($r['Text'])."</p>";
                 if($r['file']) {
                     $presentor = 'data:image/jpeg;base64,'.base64_encode($r['file']);
                     $data .= '<div class = "file-container"><div class = "file" style = "background-image: url(\''.$presentor.'\')"></div></div>';
@@ -313,7 +313,7 @@
                     </div>
                     <p class = "time-stamp">'.$stamp.'</p>
                 </div>';
-                $data .= "<div class = 'content'><p class = 'blog-comment-text'>".$r['Text']."</p>";
+                $data .= "<div class = 'content'><p class = 'blog-comment-text'>".tagRecognize($r['Text'])."</p>";
                 if($r['file']) {
                     $presentor = 'data:image/jpeg;base64,'.base64_encode($r['file']);
                     $data .= '<div class = "file-container"><div class = "file" style = "background-image: url(\''.$presentor.'\')"></div></div>';
@@ -390,7 +390,7 @@
                     </div>
                     <div class = "lower">
                         '.$image.'
-                        <p class = "text" id = "manage-commet-text-'.$r['ID'].'"> '.$r['Text'].' </p>
+                        <p class = "text" id = "manage-commet-text-'.$r['ID'].'"> '.tagRecognize($r['Text']).' </p>
                         <div class = "user-row-likes" id = "user-likes-'.$r['ID'].'"></div>
                     </div>
                 </div>
@@ -407,7 +407,23 @@
         $s -> execute();
         $r = $s -> fetch(PDO::FETCH_ASSOC);
         $c = null; //forget connection...
-        echo $r['Text'];
+        echo tagRecognize($r['Text']);
+    }
+
+    function tagRecognize($string) {
+        $hashtags = array();
+        if (preg_match_all('/#([^\s]+)/', $string, $hashtags)) {
+            for($item = 0; $item < count($hashtags[1]); $item++) {
+                $string = str_replace("#".$hashtags[1][$item], "<a class = 'tag-linker'>"."#".$hashtags[1][$item]."</a>", $string);
+            }
+        }
+        $nametags = array();
+        if (preg_match_all('/@([^\s]+)/', $string, $nametags)) {
+            for($item = 0; $item < count($nametags[1]); $item++) {
+                $string = str_replace("@".$nametags[1][$item], "<a class = 'tag-linker'>"."@".$nametags[1][$item]."</a>", $string);
+            }
+        }
+        return $string;
     }
 
     // TODO: Fix Time Stamos displayal

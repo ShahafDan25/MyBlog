@@ -39,7 +39,7 @@
     <body>
         <header>
             <button class = "show-sidebar-btn" onclick = "slideSidebar();"><i class = "fa fa-bars"></i></button>
-            <h4 id = "current-cookie-user"></h4>
+            <!-- <h4 id = "current-cookie-user" style = "display: block"></h4> -->
             <h3 class = "header-page-name" onclick = "location.replace('add.html');">Shahafster</h3>
             <div class="my-bitmoji-stickerpicker-icon-target"></div>
         </header>
@@ -55,6 +55,8 @@
             </div>
         </div>
         <div id = "register-form" style = "display: none" class = "register-form">
+            <button class = "login-option option-a"> Login </button>
+            <button class = "login-option option-a"> Sign Up </button>
             <form id = "registration-form">
                 <h2> You need to register to like posts </h2>
                 <label> First Name </label>
@@ -87,6 +89,7 @@
 
             var name = displayCurrentUser();
             if(name != "nouser") $("#current-cookie-user").text(name);
+            else if (name == "nouser") document.getElementById("current-cookie-user").style.display = "none";
         });
     </script>
 
