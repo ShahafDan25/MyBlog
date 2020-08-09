@@ -39,6 +39,7 @@
     <body>
         <header>
             <button class = "show-sidebar-btn" onclick = "slideSidebar();"><i class = "fa fa-bars"></i></button>
+            <h4 id = "current-cookie-user"></h4>
             <h3 class = "header-page-name" onclick = "location.replace('add.html');">Shahafster</h3>
             <div class="my-bitmoji-stickerpicker-icon-target"></div>
         </header>
@@ -83,6 +84,9 @@
                     $("#blog").html(data);
                 }
             });
+
+            var name = displayCurrentUser();
+            if(name != "nouser") $("#current-cookie-user").text(name);
         });
     </script>
 

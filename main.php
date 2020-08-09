@@ -129,6 +129,11 @@
         deleteUser($_POST['userid'], $_POST['first'], $_POST['last']);
     }
 
+    if($_POST['message'] == "get-current-cookie-user") {
+        if(isset($_COOKIE['shahafster-user-firstname'])) echo $_COOKIE['shahafster-user-firstname'].' '.$_COOKIE['shahafster-user-lastname'];
+        else echo "nouser";
+    }
+
     function deleteUser($id, $first, $last) {
         $c = connDB(); // set connection
 

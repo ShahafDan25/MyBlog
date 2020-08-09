@@ -527,7 +527,7 @@ header {
     color: #E0E0E0;
     /* border: 3px solid #E0E0E0; */
     box-sizing: border-box;
-    box-shadow: 2px 2px 4px #191919;
+    /* box-shadow: 2px 2px 4px #191919; */
 }
 .blog-comment-manage .upper .action-btn.option-1a {
     background-color: rgb(255, 77, 77);

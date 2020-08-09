@@ -76,6 +76,7 @@ function activate(id){
 function allow_edit(id) {
     var form = document.getElementById("edit-comment-form");
     var text = "";
+    form.style.display = "block";
     //first get the text as the value
     $.ajax({
         type: "POST",
@@ -111,6 +112,7 @@ function allow_edit(id) {
                     alertify.message("Not Changed");
                 }
             );
+            form.style.display = "none";
         }
     });
     
@@ -240,7 +242,6 @@ function register(id) {
     ).set({labels:{ok: 'Submit', cancel: 'Cancel'}, padding: false}); 
 }
 
-
 function promptPassword(oldpw, title) {
     if(oldpw == "cookiefound") alertify.success("Welcome!"); //WELCOME
     else {
@@ -275,5 +276,20 @@ function promptPassword(oldpw, title) {
             }
         );
     }
+}
+
+function displayCurrentUser() {
+    $.ajax({
+        type: "POST",
+        url: "main.php",
+        data: {
+            message: "get-current-cookie-user"
+        },
+        success: function(data) {
+            var names = $.trim(data).split('\\s+');
+            alertify.succes("Welcome back, "+names[0]);
+            return $.trim(data);
+        }
+    });
 }
   
