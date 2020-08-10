@@ -134,6 +134,26 @@
         else echo "nouser";
     }
 
+    if($_POST['message'] == "login-user") {
+        echo loginUser($_POST['firstname'], $_POST['lastname'], $_POST['pin'], $_POST['post']);
+    }
+
+    function loginUser($first, $last, $pin, $post) {
+        $c = connDB(); //set connection
+        $sql = "SELECT Stamp FROM Visitors WHERE FirstName = '".$first."' AND LastName = '".$last."' AND ID = ".$pin.";";
+        $s = $c -> prepare($sql);
+        $s -> execute();
+        if($r = $s -> fetch(PDO::FETCH_ASSOC)) {
+            setcookie("shahafster-user-id", $pin, time() + 60*60*24*365*25); //set cookie to 25 years
+            setcookie("shahafster-user-firstname", $first, time() + 60*60*24*365*25); //set cookie to 25 years
+            setcookie("shahafster-user-lastname", $last, time() + 60*60*24*365*25); //set cookie to 25 years
+            likePost($post);
+            $c = null; //close connection
+            return $r['FirstName'].' '.$r['LastName'];
+        }
+        else return "notfound";
+    }
+
     function deleteUser($id, $first, $last) {
         $c = connDB(); // set connection
 
@@ -439,4 +459,5 @@
     // TODO: add option to enter ' in my posts
     // TODO : Display in manage comments who liked that comment
     // TODO: search bar
+    // TODO : create login history for visitors
 ?>

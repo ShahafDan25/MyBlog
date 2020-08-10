@@ -1,5 +1,19 @@
 var sidebarSliderCounter = 0;
+var postidtolike = -1; //default
+var loginOption = "";
 // TODO : Add Bitmoji to this blog page
+
+// DEFINE Alertify definitions
+alertify.set('notifier','position', 'bottom-center'); //set position    
+alertify.set('notifier','delay', 1.5); //set dellay
+alertify.minimalDialog || alertify.dialog('minimalDialog',function(){
+    return {
+        main:function(content){
+            this.setContent(content); 
+        }
+    };
+});
+
 
 function slideSidebar() {
     var sidebar = document.getElementById("sidebar");
@@ -162,6 +176,7 @@ function deleteUser(id) {
 }
 
 function likePost(id) {
+    postidtolike = id;
     $.ajax({
         type: "POST",
         url: "main.php",
@@ -170,29 +185,28 @@ function likePost(id) {
             postid: id
         },
         success: function(data) {
-            if($.trim(data) == "notfound") {
-                document.getElementById("register-form").style.display = "block";
-                //create account
-                register(id);
-            }
-            else {
+            console.log("likePost: " + data);
+            if($.trim(data) == "notfound") registrationForm();
+            else markPostLiked(id);
                 // alertify.success("Welcome " + data + "!");
-                $.ajax({
-                    type: "POST",
-                    url: "main.php",
-                    data: {
-                        message: "update-likes-amount",
-                        postid: id
-                    },
-                    success: function(data) {
-                        $("#likes-label-" + id).html(data);
-                        $("#like-icon-"+id).toggleClass("fa-heart-o");
-                        $("#like-icon-"+id).toggleClass("fa-heart");
-                    }
-                });    
-            }
         }
     });
+}
+
+function markPostLiked(id) {
+    $.ajax({
+        type: "POST",
+        url: "main.php",
+        data: {
+            message: "update-likes-amount",
+            postid: id
+        },
+        success: function(data) {
+            $("#likes-label-" + id).html(data);
+            $("#like-icon-"+id).toggleClass("fa-heart-o");
+            $("#like-icon-"+id).toggleClass("fa-heart");
+        }
+    });    
 }
 
 function cleanNewCommentInputs() {
@@ -204,42 +218,94 @@ function cleanNewCommentInputs() {
     document.getElementById("attachment").value = "";
 }
 
-function register(id) {
-    var form = document.getElementById("register-form");
-    alertify.confirm(
-        form,
-        function() { //register
-            $.ajax({
-                type: "POST",
-                url: "main.php",
-                data: {
-                    message: "set-account",
-                    firstname: $("#register-first-name").val(),
-                    lastname: $("#register-last-name").val(),
-                    pin: $("#register-pin").val(),
-                    post: id
-                },
-                success: function(data) {
-                    if($.trim(data) == "true") {
-                        // $("#like-icon-"+id).toggleClass("fa-heart-o");
-                        // $("#like-icon-"+id).toggleClass("fa-heart");
-                        likePost(id);
-                        alertify.success("Welcome, " + $("#register-first-name").val());
-                    }
-                    else if($.trim(data) == "false") {
-                        alertify.message ("PIN taken").ondismiss = function() {
-                            $("#register-pin").val() = "";
-                            register(id); 
-                        }
+function registrationForm() {
+    var formdiv = document.getElementById("register-form");
+    formdiv.style.display = "block";
+    document.getElementById("registration-instructions").style.display = "block";
+    alertify.minimalDialog(formdiv).set('resizable',true).resizeTo('80%','60%');;
+}
+
+function signin(option) {
+    var form = document.getElementById("registration-form");
+    if(option == "cancel") {
+        formdiv.style.display = "none";
+        alertify.message("Maybe Later...");
+    }
+    else if (option == "login") {
+        form.style.display = "block";
+        var btns = document.getElementsByClassName("login-option");
+        for(var i = 0; i < btns.length; i++) { //clear login option buttons
+            btns[i].style.display = "none";
+        }
+        document.getElementById("registration-instructions").style.display = "none";
+        loginOption = "login";
+    }
+    else if(option == "signup") {
+        form.style.display = "block";
+        var btns = document.getElementsByClassName("login-option");
+        for(var i = 0; i < btns.length; i++) { //clear login option buttons
+            btns[i].style.display = "none";
+        }
+        document.getElementById("registration-instructions").style.display = "none";
+        loginOption = "signup";
+    }
+}   
+
+function submitSignin() {
+    if(loginOption == "login") {
+        $.ajax({
+            type: "POST",
+            url: "main.php",
+            data: {
+                message: "login-user",
+                firstname: $("#register-first-name").val(),
+                lastname: $("#register-last-name").val(),
+                pin: $("#register-pin").val(),
+                post: postidtolike
+            },
+            success: function(data) {
+                if($.trim(data) != "notfound") {
+                    alertify.confirm.close();
+                    alertify.success("Welcome back, \r\n " + $.trim(data));
+                }
+                else if($.trim(data) == "notfound") {
+                    alertify.message("Account not found");
+                    alertify.confirm.close();
+                    signin("login");
+                }
+            }
+        });
+    }
+    else if(loginOption = "signup") {
+        $.ajax({
+            type: "POST",
+            url: "main.php",
+            data: {
+                message: "set-account",
+                firstname: $("#register-first-name").val(),
+                lastname: $("#register-last-name").val(),
+                pin: $("#register-pin").val(),
+                post: postidtolike
+            },
+            success: function(data) {
+                if($.trim(data) == "true") {
+                    likePost(id);
+                    alertify.success("Welcome, " + $("#register-first-name").val());
+                }
+                else if($.trim(data) == "false") {
+                    alertify.message ("PIN taken").ondismiss = function() {
+                        $("#register-pin").val() = "";
+                        signin(signup); 
                     }
                 }
-            }); 
-        },
-        function () { //cancel
-            alertify.message("Maybe Later...");
-            document.getElementById("register-form").style.display = "none";
-        }
-    ).set({labels:{ok: 'Submit', cancel: 'Cancel'}, padding: false}); 
+            }
+        });
+    }
+}
+
+function cancelSubmitSignin() {
+    document.getElementById("registration-form").style.display = "none";
+    registrationForm();
 }
 
 function promptPassword(oldpw, title) {
@@ -286,9 +352,12 @@ function displayCurrentUser() {
             message: "get-current-cookie-user"
         },
         success: function(data) {
-            var names = $.trim(data).split('\\s+');
-            alertify.succes("Welcome back, "+names[0]);
-            return $.trim(data);
+            if($.trim(data) == "nouser") return "nouser";
+            else {
+                var names = $.trim(data).split('\\s+');
+                alertify.success("Welcome back, "+names[0]);
+                return $.trim(data);
+            }
         }
     });
 }

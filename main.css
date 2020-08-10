@@ -346,6 +346,38 @@ header {
     font-size: 90%;
     display: block;
 }
+div.login-options-container {
+    height: 60%;
+}
+div.register-form .login-option {
+    display: block;
+    width: 100%;
+    border: none;
+    border-radius: 2px;
+    box-shadow: 2px 2px 6px #414141;
+    box-sizing: border-box;
+    padding: 1%;
+    margin-bottom: 1%;
+    font-weight: bold;
+    font-size: 120%;
+    font-family: "Gill Sans"; 
+}
+div.register-form .login-option.option-a {
+    background-color: rgb(102, 124, 246);
+    color: #303030;
+    border: 3px solid rgb(128, 147, 255)
+}
+div.register-form .login-option.option-b {
+    color: rgb(102, 124, 246);
+    background-color: #303030;
+    border: 3px solid #191919;
+}
+div.register-form .login-option.option-c {
+    background-color: #606060;
+    color: #303030;
+    border: 3px solid #E6E6E6;
+
+}
 /* ------------------------ ADD COMMENT PAGE ------------------------ */
 .add-blog-container {
     text-align: center;
@@ -421,7 +453,6 @@ header {
     text-align: left;
     display: block;
 }
-
 .add-blog-container form .inputfile-container input[type=file] {
     width: 0.1px;
     height: 0.1px;
