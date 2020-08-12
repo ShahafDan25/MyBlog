@@ -315,12 +315,12 @@ header {
     flex: 3;
 }
 /* ------------------------ REGISTRATION FORM ------------------------ */
-.register-form {
+.registration-form-div {
     margin: 2%;
     font-family: "Gill Sans";
     text-align: center;
 }
-.register-form input {
+.registration-form-div input {
     width: 70%;
     border: none;
     margin: 0px;
@@ -333,12 +333,12 @@ header {
     display: block;
     margin-left: 3%;
 }
-.register-form input:focus {
+.registration-form-div input:focus {
     border-left: 3px solid rgb(102, 124, 246);
     transition: 0.25s ease-in-out;
     outline: none;
 }
-.register-form label {
+.registration-form-div label {
     margin-left: 7%;
     text-decoration: underline;
     text-align: left;
@@ -349,7 +349,7 @@ header {
 div.login-options-container {
     height: 60%;
 }
-div.register-form .login-option {
+div.register-form-options .login-option {
     display: block;
     width: 100%;
     border: none;
@@ -362,17 +362,17 @@ div.register-form .login-option {
     font-size: 120%;
     font-family: "Gill Sans"; 
 }
-div.register-form .login-option.option-a {
+div.register-form-options .login-option.option-a {
     background-color: rgb(102, 124, 246);
     color: #303030;
     border: 3px solid rgb(128, 147, 255)
 }
-div.register-form .login-option.option-b {
+div.register-form-options .login-option.option-b {
     color: rgb(102, 124, 246);
     background-color: #303030;
     border: 3px solid #191919;
 }
-div.register-form .login-option.option-c {
+div.register-form-options .login-option.option-c {
     background-color: #606060;
     color: #303030;
     border: 3px solid #E6E6E6;
