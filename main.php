@@ -460,4 +460,6 @@
     // TODO : Display in manage comments who liked that comment
     // TODO: search bar
     // TODO : create login history for visitors
+    // TODO: Login history
+    // TODO: Individual Post like history
 ?>

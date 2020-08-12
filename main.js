@@ -1,6 +1,5 @@
 var sidebarSliderCounter = 0;
 var postidtolike = -1; //default
-var loginOption = "";
 // TODO : Add Bitmoji to this blog page
 
 // DEFINE Alertify definitions
@@ -186,27 +185,29 @@ function likePost(id) {
         },
         success: function(data) {
             console.log("likePost: " + data);
-            if($.trim(data) == "notfound") registrationForm();
-            else markPostLiked(id);
+            if($.trim(data) == "notfound") {
+                var optionsdiv = document.getElementById("register-form-options");
+                optionsdiv.style.display = "block";
+                alertify.minimalDialog(optionsdiv).set('resizable',true).resizeTo('80%','60%');
+            }
+            else {
+                $.ajax({
+                    type: "POST",
+                    url: "main.php",
+                    data: {
+                        message: "update-likes-amount",
+                        postid: id
+                    },
+                    success: function(data) {
+                        $("#likes-label-" + id).html(data);
+                        $("#like-icon-"+id).toggleClass("fa-heart-o");
+                        $("#like-icon-"+id).toggleClass("fa-heart");
+                    }
+                }); 
+            }
                 // alertify.success("Welcome " + data + "!");
         }
     });
-}
-
-function markPostLiked(id) {
-    $.ajax({
-        type: "POST",
-        url: "main.php",
-        data: {
-            message: "update-likes-amount",
-            postid: id
-        },
-        success: function(data) {
-            $("#likes-label-" + id).html(data);
-            $("#like-icon-"+id).toggleClass("fa-heart-o");
-            $("#like-icon-"+id).toggleClass("fa-heart");
-        }
-    });    
 }
 
 function cleanNewCommentInputs() {
@@ -218,95 +219,91 @@ function cleanNewCommentInputs() {
     document.getElementById("attachment").value = "";
 }
 
-function registrationForm() {
-    var formdiv = document.getElementById("register-form");
-    formdiv.style.display = "block";
-    document.getElementById("registration-instructions").style.display = "block";
-    alertify.minimalDialog(formdiv).set('resizable',true).resizeTo('80%','60%');;
-}
-
-function signin(option) {
-    var form = document.getElementById("registration-form");
+function signin(option, title) {
+    var loginOption = "";
+    var optionsdiv = document.getElementById("register-form-options");
+    optionsdiv.style.display = "none";
+    alertify.minimalDialog.close();
+    var form = document.getElementById("registration-form-div");
     if(option == "cancel") {
-        formdiv.style.display = "none";
+        form.style.display = "none";
         alertify.message("Maybe Later...");
+        return;
     }
     else if (option == "login") {
+        $("#signin-instructions").text(title);
         form.style.display = "block";
-        var btns = document.getElementsByClassName("login-option");
-        for(var i = 0; i < btns.length; i++) { //clear login option buttons
-            btns[i].style.display = "none";
-        }
-        document.getElementById("registration-instructions").style.display = "none";
         loginOption = "login";
     }
     else if(option == "signup") {
+        $("#signin-instructions").text(title);
         form.style.display = "block";
-        var btns = document.getElementsByClassName("login-option");
-        for(var i = 0; i < btns.length; i++) { //clear login option buttons
-            btns[i].style.display = "none";
-        }
-        document.getElementById("registration-instructions").style.display = "none";
         loginOption = "signup";
     }
+    alertify.confirm( 
+        form,
+        function() {
+            if($("#register-first-name").val().length < 2) signin(loginOption, 'Enter your first name');
+            else if($("#register-last-name").val().length < 2) signin(loginOption, 'Enter your last name');
+            else { //first and last name inputs are okay
+                //next: check for taken pin if signing up
+                if(loginOption = "signup") {
+                    $.ajax({
+                        type: "POST",
+                        url: "main.php",
+                        data: {
+                            message: "login-user",
+                            firstname: $("#register-first-name").val(),
+                            lastname: $("#register-last-name").val(),
+                            pin: $("#register-pin").val(),
+                            post: postidtolike
+                        },
+                        success: function(data) {
+                            if($.trim(data) != "notfound") {
+                                alertify.confirm.close();
+                                alertify.success("Welcome back, \r\n " + $.trim(data));
+                            }
+                            else if($.trim(data) == "notfound") {
+                                alertify.message("Error...");
+                                alertify.confirm.close();
+                                signin("login", 'Your credentials are wrong...');
+                            }
+                        }
+                    });
+                }
+                else if(loginOption = "login") {
+                    $.ajax({
+                        type: "POST",
+                        url: "main.php",
+                        data: {
+                            message: "set-account",
+                            firstname: $("#register-first-name").val(),
+                            lastname: $("#register-last-name").val(),
+                            pin: $("#register-pin").val(),
+                            post: postidtolike
+                        },
+                        success: function(data) {
+                            if($.trim(data) == "true") {
+                                likePost(id);
+                                alertify.success("Welcome, " + $("#register-first-name").val());
+                            }
+                            else if($.trim(data) == "false") {
+                                alertify.message ("PIN taken").ondismiss = function() {
+                                    $("#register-pin").val() = "";
+                                    signin('signup', 'Choose a different PIN'); 
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+        },
+        function() { //cancel
+            alertify.confirm.close(); 
+            alertify.message("Maybe Later...");
+        }
+    );
 }   
-
-function submitSignin() {
-    if(loginOption == "login") {
-        $.ajax({
-            type: "POST",
-            url: "main.php",
-            data: {
-                message: "login-user",
-                firstname: $("#register-first-name").val(),
-                lastname: $("#register-last-name").val(),
-                pin: $("#register-pin").val(),
-                post: postidtolike
-            },
-            success: function(data) {
-                if($.trim(data) != "notfound") {
-                    alertify.confirm.close();
-                    alertify.success("Welcome back, \r\n " + $.trim(data));
-                }
-                else if($.trim(data) == "notfound") {
-                    alertify.message("Account not found");
-                    alertify.confirm.close();
-                    signin("login");
-                }
-            }
-        });
-    }
-    else if(loginOption = "signup") {
-        $.ajax({
-            type: "POST",
-            url: "main.php",
-            data: {
-                message: "set-account",
-                firstname: $("#register-first-name").val(),
-                lastname: $("#register-last-name").val(),
-                pin: $("#register-pin").val(),
-                post: postidtolike
-            },
-            success: function(data) {
-                if($.trim(data) == "true") {
-                    likePost(id);
-                    alertify.success("Welcome, " + $("#register-first-name").val());
-                }
-                else if($.trim(data) == "false") {
-                    alertify.message ("PIN taken").ondismiss = function() {
-                        $("#register-pin").val() = "";
-                        signin(signup); 
-                    }
-                }
-            }
-        });
-    }
-}
-
-function cancelSubmitSignin() {
-    document.getElementById("registration-form").style.display = "none";
-    registrationForm();
-}
 
 function promptPassword(oldpw, title) {
     if(oldpw == "cookiefound") alertify.success("Welcome!"); //WELCOME

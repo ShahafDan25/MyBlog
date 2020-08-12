@@ -54,15 +54,17 @@
                 <!-- TO BE POPULATED WITH PHP -->
             </div>
         </div>
-        <div id = "register-form" style = "display: none" class = "register-form">
+        <div id = "register-form-options" style = "display: none" class = "register-form">
             <h2 id = "registration-instructions">Choose an Option</h2>
             <div class = "login-options-container">
-                <button class = "login-option option-a" onclick = "signin('login');" style = "display: block"> Login </button>
-                <button class = "login-option option-b" onclick = "signin('singup');" style = "display: block"> Sign Up </button>
-                <button class = "login-option option-c" onclick = "signin('cancel');" style = "display: block"> Cancel </button>
+                <button class = "login-option option-a" onclick = "signin('login', 'Login to like posts!');" style = "display: block"> Login </button>
+                <button class = "login-option option-b" onclick = "signin('singup', 'Sign up to like posts!');" style = "display: block"> Sign Up </button>
+                <button class = "login-option option-c" onclick = "signin('cancel', 'canceling');" style = "display: block"> Cancel </button>
             </div>
-            <form id = "registration-form" style = "display: none">
-                <h2> You need to register to like posts </h2>
+        </div>
+        <div id = "registration-form-div" style = "display: none">
+            <form id = "registration-form">
+                <h2 id = "signin-instructions"></h2>
                 <label> First Name </label>
                 <input type = "text" id = "register-first-name" placeholder = "  ..."/>
                 <br>
@@ -72,8 +74,6 @@
                 <label> Create PIN </label>
                 <input type = "number" id = "register-pin" placeholder = "  ..."/>
                 <br>
-                <button class = "submit-signin" id = "submit-signin" onclick = "submitSignin();"> Submit </button>
-                <button class = "cancel-signin" id = "cancel-signin" onclick = "cancelSubmitSignin();"> Cancel </button>
             </form>
         </div>
     </body>
