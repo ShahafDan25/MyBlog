@@ -436,13 +436,19 @@
             for($item = 0; $item < count($hashtags[1]); $item++) {
                 $string = str_replace("#".$hashtags[1][$item], "<a class = 'tag-linker'>"."#".$hashtags[1][$item]."</a>", $string);
             }
-        }
+        } //Add to database too (need to modify database for hashtags per post)
         $nametags = array();
         if (preg_match_all('/@([^\s]+)/', $string, $nametags)) {
             for($item = 0; $item < count($nametags[1]); $item++) {
                 $string = str_replace("@".$nametags[1][$item], "<a class = 'tag-linker'>"."@".$nametags[1][$item]."</a>", $string);
             }
-        }
+        } //add to db   
+        $placetags = array();
+        if (preg_match_all('/=([^\s]+)/', $string, $placetags)) {
+            for($item = 0; $item < count($placetags[1]); $item++) {
+                $string = str_replace("=".$placetags[1][$item], "<a class = 'tag-linker'>"."<i class = 'fa fa-map-marker'></i>".$placetags[1][$item]."</a>", $string);
+            }
+        } // add to db
         return $string;
     }
 
