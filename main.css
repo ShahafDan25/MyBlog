@@ -110,7 +110,7 @@ footer {
     display: none;
     position: fixed !important;
 }
-/*----------------- NAVIGATION BAR ------------------- */
+/*----------------- HEADER BAR ------------------- */
 header {
     width: 100%;
     margin: 0;
@@ -353,10 +353,10 @@ div.register-form-options .login-option {
     display: block;
     width: 100%;
     border: none;
-    border-radius: 2px;
+    border-radius: 150px;
     box-shadow: 2px 2px 6px #414141;
     box-sizing: border-box;
-    padding: 1%;
+    padding: 0.75%;
     margin-bottom: 1%;
     font-weight: bold;
     font-size: 120%;
@@ -650,7 +650,39 @@ div.register-form-options .login-option.option-c {
 }
 
 
+/* --------------------- BLOG-POST NAVIGATION BAR  ------------------------------- */
+div.container div.blog-nav {
+    text-align: center;
+    width: 100%;
+    display: inline-flex;
+    position: relative;
+    justify-content: center;
+    align-items: baseline !important;
+}
+div.container div.blog-nav button {
+    border: none;
+    border-radius: 150px;
+    border: 1px solid black;
+    height: 3rem;
+    width: 7% !important;
+    display: inline;
+    /* flex: 1; */
+    align-self: baseline !important;
+    margin: 0.5%;
+    bottom: 2% !important;
 
+}
+div.container  div.blog-nav button img {
+    height: 3rem; 
+    width: auto;
+    margin: 0px !important;
+    bottom: 2% !important;
+}
+
+
+
+
+/* -------------- MATRIX & TABLES CSS -------------------- */
 .matrix {
     width: 100%;
     border-collapse: collapse;
