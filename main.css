@@ -651,29 +651,40 @@ div.register-form-options .login-option.option-c {
 
 
 /* --------------------- BLOG-POST NAVIGATION BAR  ------------------------------- */
-div.container div.blog-nav {
+div.cotainer div.blog-nav-con {
+    text-align: center !important;
+    position: relative;
+    display: block;
+}
+div.container div div.blog-nav {
     text-align: center;
-    width: 100%;
+    width: 30%;
     display: inline-flex;
     position: relative;
     justify-content: center;
     align-items: baseline !important;
-}
-div.container div.blog-nav button {
-    border: none;
+    background-color: #303030;
     border-radius: 150px;
-    border: 1px solid black;
-    height: 3rem;
-    width: 7% !important;
-    display: inline;
-    /* flex: 1; */
-    align-self: baseline !important;
-    margin: 0.5%;
-    bottom: 2% !important;
-
+    border: 3px solid #232323;
+    box-sizing: border-box;
+    padding: 1%;
+    justify-self: center;
+    margin: 1% 35% 1% 35%;
+    
 }
-div.container  div.blog-nav button img {
-    height: 3rem; 
+div.container div div.blog-nav button {
+    width: 7% !important;
+    margin: 0.7%;
+    background: transparent;
+    text-align: center;
+    border: none;
+}
+div.container div div.blog-nav button i {
+    color: rgb(102, 124, 246);
+    font-size: 150%;
+}
+div.container div div.blog-nav button img {
+    height: 60px; 
     width: auto;
     margin: 0px !important;
     bottom: 2% !important;

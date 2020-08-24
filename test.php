@@ -1,21 +1,30 @@
 <?php 
+include "db.php";
 
-$string = "Hello World! This is a #text with as many #hashtags as I could possible get. Let's #tryItOut now!";
-$matches = array();
-if (preg_match_all('/#([^\s]+)/', $string, $matches)) {
-    for($item = 0; $item < count($matches[1]); $item++) {
-        $string = str_replace("#".$matches[1][$item], "<a class = 'x'>"."#".$matches[1][$item]."</a>", $string);
+$firstPostStamp = 1;
+function populateBlog($direction) {
+    if($firstPostStamp != NULL) $sql = "SELECT b.ID, b.Stamp FROM BlogComments b WHERE active = 1 ORDER BY Stamp DESC LIMIT 12;";
+    else if($direction == "prev") $sql = "SELECT b.ID, b.Stamp FROM BlogComments b WHERE active = 1 AND b.Stamp < '".$firstPostStamp."' ORDER BY Stamp ASC LIMIT 12;";
+    else if($direction == "next") $sql = "SELECT b.ID, b.Stamp FROM BlogComments b WHERE active = 1 AND b.Stamp > '".$firstPostStamp."' ORDER BY Stamp DESC LIMIT 12;";
+    echo "\n".$sql."\n";
+    $c = connDB(); 
+    $s = $c -> prepare($sql);
+    $s -> execute();
+    $data = "";
+    $setFirstStamp = false;
+
+    while($r = $s -> fetch(PDO::FETCH_ASSOC)) {
+        if(!$setFirstStamp) {
+            $firstPostStamp = $r['Stamp'];
+            $setFirstStamp = true;
+        }
+        $data .= $r['ID']."\t";
     }
-}
-$matches = array();
-if (preg_match_all('/@([^\s]+)/', $string, $matches)) {
-    for($item = 0; $item < count($matches[1]); $item++) {
-        $string = str_replace("#".$matches[1][$item], "<a class = 'x'>"."#".$matches[1][$item]."</a>", $string);
-    }
+    return $data;
 }
 
-
-
-echo $string."\n";
+echo "NULL    -      ".populateBlog(NULL)."\n\n";
+echo "PREV    -      ".populateBlog("prev")."\n\n";
+echo "NEXT    -      ".populateBlog('next')."\n\n";
 
 ?>

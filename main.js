@@ -358,4 +358,21 @@ function displayCurrentUser() {
         }
     });
 }
+
+// ------------ BLOG NAVIGATIONS -----------
+function movePosts(direction) {
+    $.ajax({
+        type: "POST",
+        url: "main.php",
+        data: {
+            message: "move-posts",
+            goto: direction
+        },
+        success: function(data) {
+            if($.trim(data) == "latestPost") alertify.message("No Earlier Posts");
+            else if($.trim(data) == "earliestPost") alertfy.message("No New Posts...")
+            else $("#blog").html(data);
+        }
+    })
+}
   

@@ -94,7 +94,12 @@
     }
 
     if($_POST['message'] == "populate-blog") {
-        echo populateBlog();
+        $_SESSION['postCount'] = 0;
+        echo populateBlog("first");
+    }
+
+    if($_POST['message'] == "move-posts") {
+        echo populateBlog($_POST['goto']);
     }
 
     if($_POST['message'] == "set-account") {
@@ -269,10 +274,24 @@
         return "true";
     }
 
-    function populateBlog() {
+    function populateBlog($postDisp) {
         $months = ["January", "February", "March", "April", "May", " June", "July", "August", "September", "October", "November", "December"];
         $c = connDB();
-        $sql = "SELECT ID, Stamp, Text, FeelingRate, file FROM BlogComments WHERE active = 1 ORDER BY Stamp DESC;";
+        if($postDisp == "first") $_SEESION['postCount'] = 0;
+        else if($postDisp == "prev") {
+            if ($_SESSION['postCount'] < 12) return "latestPost";
+            else $_SESSION['postCount'] -= 12;
+        }
+        else if($postDisp == "next") {
+            $sql = "SELECT COUNT(ID) FROM BlogComments";
+            $s = $c -> prepare($sql);
+            $s -> execute();
+            $r = $s -> fetch(PDO::FETCH_ASSOC);
+            $totalPosts = $r['COUNT(ID)'];
+            if($_SESSION['postCount'] > $totalPosts - 12) return "earliestPost";
+            else $_SESSION['postCount'] += 12;
+        }
+        $sql = "SELECT b.ID, b.Stamp, b.Text, b.FeelingRate, b.file FROM BlogComments b WHERE active = 1 AND b.ID > ".$_SESSION['postCount']." ORDER BY Stamp DESC LIMIT 12;";
         $s = $c -> prepare($sql);
         $s -> execute();
         $data = "";
