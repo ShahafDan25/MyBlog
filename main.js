@@ -369,8 +369,8 @@ function movePosts(direction) {
             goto: direction
         },
         success: function(data) {
-            if($.trim(data) == "latestPost") alertify.message("No Earlier Posts");
-            else if($.trim(data) == "earliestPost") alertfy.message("No New Posts...")
+            if($.trim(data) == "lastestPost") alertify.message("No New Posts");
+            else if($.trim(data) == "earliestPost") alertify.message("No Earliet Posts...")
             else $("#blog").html(data);
         }
     })

@@ -1,4 +1,7 @@
 <?php
+    if(session_status() !== PHP_SESSION_ACTIVE) {
+        session_start(); // start session
+    }
     include "db.php";
     $months = ["January", "February", "March", "April", "May", " June", "July", "August", "September", "October", "November", "December"];
     //set time zone
@@ -94,7 +97,6 @@
     }
 
     if($_POST['message'] == "populate-blog") {
-        $_SESSION['postCount'] = 0;
         echo populateBlog("first");
     }
 
@@ -277,21 +279,28 @@
     function populateBlog($postDisp) {
         $months = ["January", "February", "March", "April", "May", " June", "July", "August", "September", "October", "November", "December"];
         $c = connDB();
-        if($postDisp == "first") $_SEESION['postCount'] = 0;
+        if($postDisp == "first") {
+            if(session_status() !== PHP_SESSION_ACTIVE) session_start(); // start session
+            $sql = "SELECT COUNT(ID) FROM BlogComments";
+            $s = $c -> prepare($sql);
+            $s -> execute();
+            $r = $s -> fetch(PDO::FETCH_ASSOC);
+            $_SESSION['postCount'] = $r['COUNT(ID)'];
+        }
         else if($postDisp == "prev") {
-            if ($_SESSION['postCount'] < 12) return "latestPost";
+            if ($_SESSION['postCount'] < 12) return "earliestPost";
             else $_SESSION['postCount'] -= 12;
         }
-        else if($postDisp == "next") {
+        else if($postDisp == "next") { 
             $sql = "SELECT COUNT(ID) FROM BlogComments";
             $s = $c -> prepare($sql);
             $s -> execute();
             $r = $s -> fetch(PDO::FETCH_ASSOC);
             $totalPosts = $r['COUNT(ID)'];
-            if($_SESSION['postCount'] > $totalPosts - 12) return "earliestPost";
-            else $_SESSION['postCount'] += 12;
+            if($_SESSION['postCount'] + 12 <= $r['COUNT(ID)']) $_SESSION['postCount'] += 12;
+            else return "lastestPost";
         }
-        $sql = "SELECT b.ID, b.Stamp, b.Text, b.FeelingRate, b.file FROM BlogComments b WHERE active = 1 AND b.ID > ".$_SESSION['postCount']." ORDER BY Stamp DESC LIMIT 12;";
+        $sql = "SELECT b.ID, b.Stamp, b.Text, b.FeelingRate, b.file FROM BlogComments b WHERE b.active = 1 AND b.ID <= ".$_SESSION['postCount']." ORDER BY b.ID DESC LIMIT 12;";
         $s = $c -> prepare($sql);
         $s -> execute();
         $data = "";
