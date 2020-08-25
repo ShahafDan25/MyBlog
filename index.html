@@ -49,7 +49,9 @@
             <a class = "sidebar-option" href = "https://twitter.com/shahaf_dan"> Twitter </a>
         </div>
         <div class = "container container-without-sidebar inline" id = "container">
-            
+            <!-- <div id = "loaderSpinner">
+                <img src = "loader.gif" />
+            </div> -->
             <div class = "blog" id = "blog">
                 <!-- TO BE POPULATED WITH PHP -->
             </div>
@@ -95,13 +97,18 @@
     </footer>
     <script>
         $(document).ready(function() {
+            // $("#loaderSpinner").hide();
             $.ajax({
                 type: "POST",
                 url: "main.php",
                 data: {
                     message: "populate-blog"
                 },
+                // beforeSend: function() {
+                //     $("#loaderSpinner").show();
+                // },
                 success: function(data) {
+                    // $("#loaderSpinner").hide();
                     $("#blog").html(data);
                 }
             });

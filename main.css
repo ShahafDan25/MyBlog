@@ -314,6 +314,15 @@ header {
 .blog-comment .content .file-container {
     flex: 3;
 }
+
+div.container div#loaderSpinner {
+    text-align: center;
+    width: 100%;
+}
+div.container div#loaderSpinner img {
+    width: 25%;
+    border-radius: 150px;
+}
 /* ------------------------ REGISTRATION FORM ------------------------ */
 .registration-form-div {
     margin: 2%;

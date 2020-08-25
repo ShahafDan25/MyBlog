@@ -368,9 +368,13 @@ function movePosts(direction) {
             message: "move-posts",
             goto: direction
         },
+        // beforeSend: function() {
+        //     $("#loaderSpinner").show();
+        // },
         success: function(data) {
+            $("#loaderSpinner").hide();
             if($.trim(data) == "lastestPost") alertify.message("No New Posts");
-            else if($.trim(data) == "earliestPost") alertify.message("No Earliet Posts...")
+            else if($.trim(data) == "earliestPost") alertify.message("No Earliet Posts...");
             else $("#blog").html(data);
         }
     })

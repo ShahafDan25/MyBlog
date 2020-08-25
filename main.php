@@ -277,6 +277,7 @@
     }
 
     function populateBlog($postDisp) {
+        $postsToLoad = 20; //IF I WANT TO CHANGE THE AMOUNT OF POSTS LOADED PER PAGE <<<<
         $months = ["January", "February", "March", "April", "May", " June", "July", "August", "September", "October", "November", "December"];
         $c = connDB();
         if($postDisp == "first") {
@@ -288,8 +289,8 @@
             $_SESSION['postCount'] = $r['COUNT(ID)'];
         }
         else if($postDisp == "prev") {
-            if ($_SESSION['postCount'] < 12) return "earliestPost";
-            else $_SESSION['postCount'] -= 12;
+            if ($_SESSION['postCount'] < $postsToLoad) return "earliestPost";
+            else $_SESSION['postCount'] -= $postsToLoad;
         }
         else if($postDisp == "next") { 
             $sql = "SELECT COUNT(ID) FROM BlogComments";
@@ -297,10 +298,10 @@
             $s -> execute();
             $r = $s -> fetch(PDO::FETCH_ASSOC);
             $totalPosts = $r['COUNT(ID)'];
-            if($_SESSION['postCount'] + 12 <= $r['COUNT(ID)']) $_SESSION['postCount'] += 12;
+            if($_SESSION['postCount'] + $postsToLoad <= $r['COUNT(ID)']) $_SESSION['postCount'] += $postsToLoad;
             else return "lastestPost";
         }
-        $sql = "SELECT b.ID, b.Stamp, b.Text, b.FeelingRate, b.file FROM BlogComments b WHERE b.active = 1 AND b.ID <= ".$_SESSION['postCount']." ORDER BY b.ID DESC LIMIT 12;";
+        $sql = "SELECT b.ID, b.Stamp, b.Text, b.FeelingRate, b.file FROM BlogComments b WHERE b.active = 1 AND b.ID <= ".$_SESSION['postCount']." ORDER BY b.ID DESC LIMIT ".$postsToLoad.";";
         $s = $c -> prepare($sql);
         $s -> execute();
         $data = "";
