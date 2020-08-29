@@ -231,10 +231,18 @@
             <textarea id = "edit-comment-form-textarea" rows = "10"></textarea>
         </form>   
     </body>
-    <footer>
-        Shahaf Dan Productions
-        <br>
-        #PersonalBlog
+    <footer style = "display: none;" id = "manageComments-footerBar">
+        <div class = "blog-nav-con">
+            <div class = "blog-nav" id = "blog-nav">
+                <button class = "blog-nav-btn" onclick = "movePosts('next');"> 
+                    <i class = "fa fa-arrow-left"></i>
+                </button>
+                &nbsp; &nbsp;
+                <button class = "blog-nav-btn" onclick = "movePosts('prev');">
+                    <i class = "fa fa-arrow-right"></i>    
+                </button>
+            </div>
+        </div>
     </footer>
     <script>
         alertify.set('notifier','position', 'bottom-center'); //set position    
@@ -279,17 +287,6 @@
             });
 
             cleanNewCommentInputs();
-
-            $.ajax({
-                type: "POST",
-                url: "main.php",
-                data: {
-                    message: "populate-comments-tomanage"
-                },
-                success: function(data) {
-                    $("#comments-to-manage").html(data);
-                }
-            });
         });
     
         $("#attachment").change(function() {

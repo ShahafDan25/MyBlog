@@ -29,18 +29,34 @@ function slideSidebar() {
 }
 
 function addComments() {
+    document.getElementById("manageComments-footerBar").style.display = "none";
     document.getElementById("add-comment-div").style.display = "block";
     document.getElementById("manage-comment-div").style.display = "none";
     document.getElementById("manage-users-div").style.display = "none";
 }
 
 function manageComments() {
+    document.getElementById("manageComments-footerBar").style.display = "block";
     document.getElementById("add-comment-div").style.display = "none";
     document.getElementById("manage-comment-div").style.display = "block";
     document.getElementById("manage-users-div").style.display = "none";
+    $.ajax({
+        type: "POST",
+        url: "main.php",
+        data: {
+            message: "populate-comments-tomanage"
+        },
+        // beforeSend: function() {
+        //     $("#loaderSpinner").show();
+        // },
+        success: function(data) {
+            $("#comments-to-manage").html(data);
+        }
+    });
 }
 
 function manageUsers() {
+    document.getElementById("manageComments-footerBar").style.display = "none";
     document.getElementById("add-comment-div").style.display = "none";
     document.getElementById("manage-comment-div").style.display = "none";
     document.getElementById("manage-users-div").style.display = "block";
@@ -259,7 +275,7 @@ function signin(option, title) {
                         post: postidtolike
                     },
                     success: function(data) {
-                        alertify.closeAll():
+                        alertify.closeAll();
                         if($.trim(data) == "accountexists") signin('signup', 'Choose a different PIN');
                         else if($.trim(data) == "successSetAcount") alertify.success("Welcome, " + $("#register-last-name").val());
                         else if($.trim(data) == "notfound") signin('login', 'Account not found, try again!');
@@ -336,6 +352,26 @@ function displayCurrentUser() {
 }
 
 // ------------ BLOG NAVIGATIONS -----------
+function managementMovePosts(direction) {
+    $.ajax({
+        type: "POST",
+        url: "main.php",
+        data: {
+            message: "movepage-manage-comments",
+            goto: direction
+        },
+        // beforeSend: function() {
+        //     $("#loaderSpinner").show();
+        // },
+        success: function(data) {
+            $("#loaderSpinner").hide();
+            if($.trim(data) == "lastestPost") alertify.message("No New Posts");
+            else if($.trim(data) == "earliestPost") alertify.message("No Earliet Posts...");
+            else $("#comments-to-manage").html(data);
+        }
+    })
+}
+
 function movePosts(direction) {
     $.ajax({
         type: "POST",

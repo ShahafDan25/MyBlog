@@ -33,7 +33,7 @@
     }
 
     if($_POST['message'] == "movepage-manage-comments") {
-        
+        echo populateManagementTable($_SESSION['postCountForManagement']);
     }
 
     if($_POST['message'] == "get-add-blog-pw") {
@@ -423,11 +423,11 @@
             $s = $c -> prepare($sql);
             $s -> execute();
             $r = $s -> fetch(PDO::FETCH_ASSOC);
-            $_SESSION['postCount'] = $r['COUNT(ID)'];
+            $_SESSION['postCountForManagement'] = $r['COUNT(ID)'];
         }
         else if($postDisp == "prev") {
-            if ($_SESSION['postCount'] < $postsToLoad) return "earliestPost";
-            else $_SESSION['postCount'] -= $postsToLoad;
+            if ($_SESSION['postCountForManagement'] < $postsToLoad) return "earliestPost";
+            else $_SESSION['postCountForManagement'] -= $postsToLoad;
         }
         else if($postDisp == "next") { 
             $sql = "SELECT COUNT(ID) FROM BlogComments";
@@ -435,10 +435,10 @@
             $s -> execute();
             $r = $s -> fetch(PDO::FETCH_ASSOC);
             $totalPosts = $r['COUNT(ID)'];
-            if($_SESSION['postCount'] + $postsToLoad <= $r['COUNT(ID)']) $_SESSION['postCount'] += $postsToLoad;
+            if($_SESSION['postCountForManagement'] + $postsToLoad <= $r['COUNT(ID)']) $_SESSION['postCountForManagement'] += $postsToLoad;
             else return "lastestPost";
         }
-        $sql = "SELECT b.ID, b.Stamp, b.Text, b.FeelingRate, b.file FROM BlogComments b WHERE b.active = 1 AND b.ID <= ".$_SESSION['postCount']." ORDER BY b.ID DESC LIMIT ".$postsToLoad.";";
+        $sql = "SELECT b.ID, b.Stamp, b.Text, b.FeelingRate, b.file FROM BlogComments b WHERE b.active = 1 AND b.ID <= ".$_SESSION['postCountForManagement']." ORDER BY b.ID DESC LIMIT ".$postsToLoad.";";
         $s = $c -> prepare($sql);
         $s -> execute();
         $data = "";
