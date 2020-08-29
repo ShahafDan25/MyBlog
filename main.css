@@ -47,6 +47,17 @@
 .goright {
     float: right;
 }
+a.tag-linker {
+    color: rgb(102, 124, 246);
+    font-weight: bold;
+    text-decoration: none;
+    outline: none;
+    font-size: 90%;
+}
+a.tag-linker:hover, a.tag-linker:focus {
+    outline: none;
+    text-decoration: underline;
+}
 /*---------- CONTAINERS ------------- */
 html {
     padding: 0;
@@ -285,17 +296,6 @@ header {
 }
 .blog-comment .content .blog-comment-text {
     flex: 17;
-}
-.blog-comment .content .blog-comment-text .tag-linker {
-    color: rgb(102, 124, 246);
-    font-weight: bold;
-    text-decoration: none;
-    outline: none;
-    font-size: 90%;
-}
-.blog-comment .content .blog-comment-text .tag-linker:hover, .blog-comment .content .blog-comment-text .tag-linker:focus {
-    outline: none;
-    text-decoration: underline;
 }
 .blog-comment .content .file-container {
     flex: 3;

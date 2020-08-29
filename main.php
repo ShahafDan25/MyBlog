@@ -438,7 +438,7 @@
             if($_SESSION['postCountForManagement'] + $postsToLoad <= $r['COUNT(ID)']) $_SESSION['postCountForManagement'] += $postsToLoad;
             else return "lastestPost";
         }
-        $sql = "SELECT b.ID, b.Stamp, b.Text, b.FeelingRate, b.file FROM BlogComments b WHERE b.active = 1 AND b.ID <= ".$_SESSION['postCountForManagement']." ORDER BY b.ID DESC LIMIT ".$postsToLoad.";";
+        $sql = "SELECT b.ID, b.Stamp, b.Text, b.FeelingRate, b.file, b.active FROM BlogComments b WHERE b.ID <= ".$_SESSION['postCountForManagement']." ORDER BY b.ID DESC LIMIT ".$postsToLoad.";";
         $s = $c -> prepare($sql);
         $s -> execute();
         $data = "";
