@@ -29,7 +29,11 @@
     }
 
     if($_POST['message'] == "populate-comments-tomanage") {
-        echo populateManagementTable();
+        echo populateManagementTable("first");
+    }
+
+    if($_POST['message'] == "movepage-manage-comments") {
+        
     }
 
     if($_POST['message'] == "get-add-blog-pw") {
@@ -71,8 +75,7 @@
         echo commentTextById($_POST['commentid']);
     }
 
-    if($_POST['message'] == "add-blog-comment") 
-    {
+    if($_POST['message'] == "add-blog-comment") {
         if(strlen($_FILES["attachment"]["tmp_name"]) > 1) { //file was added
             $file = addslashes(file_get_contents($_FILES["attachment"]["tmp_name"])); 
             $fileSize = $_FILES['attachment']['size'];
@@ -91,9 +94,7 @@
             $time = date('Y-m-d').' '.date('H:i');
             if (newComment($time, $_POST['content'], $_POST['rating-option'], NULL)) echo '<script>alert("Comment Added!"); location.replace("index.html");</script>';
             else echo '<script>alert("Something Went Wrong..!."); location.replace("add.html");</script>';
-        }
-        
-        
+        } 
     }
 
     if($_POST['message'] == "populate-blog") {
@@ -151,12 +152,20 @@
         $s = $c -> prepare($sql);
         $s -> execute();
         if($r = $s -> fetch(PDO::FETCH_ASSOC)) {
+            //TODO mark login in login history table I will later build
+            
+            // set cookies because apparently they arent set or were deletd from that device
             setcookie("shahafster-user-id", $pin, time() + 60*60*24*365*25); //set cookie to 25 years
             setcookie("shahafster-user-firstname", $first, time() + 60*60*24*365*25); //set cookie to 25 years
             setcookie("shahafster-user-lastname", $last, time() + 60*60*24*365*25); //set cookie to 25 years
-            likePost($post);
+            
+            //like posts
+            $sql = "INSERT INTO Likes (Comment_ID, Visitors_ID, Visitors_LastName, Visitors_FirstName, Stamp) VALUES (".$postid.", ".$pin.", '".$last."', '".$first."', NOW());";
+            $c -> setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $c -> exec($sql);
+
             $c = null; //close connection
-            return $r['FirstName'].' '.$r['LastName'];
+            return "loggedin";
         }
         else return "notfound";
     }
@@ -259,7 +268,7 @@
         $sql = "SELECT Stamp FROM Visitors WHERE ID = ".$pin." AND FirstName = '".$first."' AND LastName = '".$last."';"; 
         $s = $c -> prepare($sql);
         $s -> execute();
-        if($s -> fetch(PDO::FETCH_ASSOC)) return "false";
+        if($s -> fetch(PDO::FETCH_ASSOC)) return "accountexists";
         else {
             $sql = "INSERT INTO Visitors (ID, FirstName, LastName, Stamp) VALUES (".$pin.", '".$first."', '".$last."', NOW());";
             $c -> setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -273,7 +282,7 @@
             setcookie("shahafster-user-lastname", $last, time() + 60*60*24*365*25); //set cookie to 25 years
         }
         $c = null; //close connection
-        return "true";
+        return "successSetAcount";
     }
 
     function populateBlog($postDisp) {
@@ -404,10 +413,32 @@
 
     }
 
-    function populateManagementTable() {
-        $c = connDB(); 
+    function populateManagementTable($postDisp) {
+        $postsToLoad = 20; //IF I WANT TO CHANGE THE AMOUNT OF POSTS LOADED PER PAGE <<<<
         $months = ["January", "February", "March", "April", "May", " June", "July", "August", "September", "October", "November", "December"];
-        $sql = "SELECT ID, Stamp, Text, FeelingRate, active, file FROM BlogComments ORDER BY Stamp DESC;";
+        $c = connDB();
+        if($postDisp == "first") {
+            if(session_status() !== PHP_SESSION_ACTIVE) session_start(); // start session
+            $sql = "SELECT COUNT(ID) FROM BlogComments";
+            $s = $c -> prepare($sql);
+            $s -> execute();
+            $r = $s -> fetch(PDO::FETCH_ASSOC);
+            $_SESSION['postCount'] = $r['COUNT(ID)'];
+        }
+        else if($postDisp == "prev") {
+            if ($_SESSION['postCount'] < $postsToLoad) return "earliestPost";
+            else $_SESSION['postCount'] -= $postsToLoad;
+        }
+        else if($postDisp == "next") { 
+            $sql = "SELECT COUNT(ID) FROM BlogComments";
+            $s = $c -> prepare($sql);
+            $s -> execute();
+            $r = $s -> fetch(PDO::FETCH_ASSOC);
+            $totalPosts = $r['COUNT(ID)'];
+            if($_SESSION['postCount'] + $postsToLoad <= $r['COUNT(ID)']) $_SESSION['postCount'] += $postsToLoad;
+            else return "lastestPost";
+        }
+        $sql = "SELECT b.ID, b.Stamp, b.Text, b.FeelingRate, b.file FROM BlogComments b WHERE b.active = 1 AND b.ID <= ".$_SESSION['postCount']." ORDER BY b.ID DESC LIMIT ".$postsToLoad.";";
         $s = $c -> prepare($sql);
         $s -> execute();
         $data = "";
@@ -486,7 +517,6 @@
     // TODO: Add a login form
     // TODO: Display name of whoever is signed in
     // TODO: ReTweet Button, connect to twitter
-    // TODO: Create pages (to slow load time)
     // TODO: Restyle the manage posts section so it has an upper bar too:
         // TODO: in tht upper bar, by clicking the likes button you can see who liked that post
         // TODO: also options to edit file, add file, remove file, edit bitmoji, edit text, de/reactivate post

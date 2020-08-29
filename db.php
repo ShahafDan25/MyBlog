@@ -25,4 +25,21 @@
         // return $conn;
     }
 
+
+    function noteVersion() {
+        /*
+        1.0 
+            release blog: I can upload text and people can view it
+        1.5
+            I can now upload images too
+        2.0 
+            People can now like the posts and login as members or as guests
+        3.0
+            Tag recognition, quicker load time by loading less posts per page
+
+
+
+
+        */
+    }
 ?>

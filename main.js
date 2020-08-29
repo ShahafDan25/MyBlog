@@ -220,87 +220,63 @@ function cleanNewCommentInputs() {
 }
 
 function signin(option, title) {
+    // alertify.alert().destroy();
     var loginOption = "";
     var optionsdiv = document.getElementById("register-form-options");
-    optionsdiv.style.display = "none";
-    alertify.minimalDialog.close();
-    var form = document.getElementById("registration-form-div");
-    if(option == "cancel") {
-        form.style.display = "none";
+    // optionsdiv.style.display = "block";
+    var form = document.getElementById("registration-form-div");    
+    if(option == "cancel") { //works
+        optionsdiv.style.display = "none";
+        alertify.closeAll();
         alertify.message("Maybe Later...");
         return;
     }
-    else if (option == "login") {
+    else {
+        alertify.closeAll();
         $("#signin-instructions").text(title);
-        form.style.display = "block";
-        loginOption = "login";
-    }
-    else if(option == "signup") {
-        $("#signin-instructions").text(title);
-        form.style.display = "block";
-        loginOption = "signup";
+        form.display.style = 'block';
+        loginOption = "option";
     }
     alertify.confirm( 
         form,
         function() {
             if($("#register-first-name").val().length < 2) signin(loginOption, 'Enter your first name');
             else if($("#register-last-name").val().length < 2) signin(loginOption, 'Enter your last name');
+            else if($("#register-pin").val().length < 2) signin(loginOption, 'Pin needs to be 2 digits or longer');
             else { //first and last name inputs are okay
                 //next: check for taken pin if signing up
-                if(loginOption = "signup") {
-                    $.ajax({
-                        type: "POST",
-                        url: "main.php",
-                        data: {
-                            message: "login-user",
-                            firstname: $("#register-first-name").val(),
-                            lastname: $("#register-last-name").val(),
-                            pin: $("#register-pin").val(),
-                            post: postidtolike
-                        },
-                        success: function(data) {
-                            if($.trim(data) != "notfound") {
-                                alertify.confirm.close();
-                                alertify.success("Welcome back, \r\n " + $.trim(data));
-                            }
-                            else if($.trim(data) == "notfound") {
-                                alertify.message("Error...");
-                                alertify.confirm.close();
-                                signin("login", 'Your credentials are wrong...');
-                            }
+                var ajaxMessage = "";
+                if(loginOption == "signup") ajaxMessage = "set-account";
+                else if(loginOption == "login") ajaxMessage = "login-user";
+                $.ajax({
+                    type: "POST",
+                    url: "main.php",
+                    data: {
+                        message: ajaxMessage,
+                        firstname: $("#register-first-name").val(),
+                        lastname: $("#register-last-name").val(),
+                        pin: $("#register-pin").val(),
+                        post: postidtolike
+                    },
+                    success: function(data) {
+                        alertify.closeAll():
+                        if($.trim(data) == "accountexists") signin('signup', 'Choose a different PIN');
+                        else if($.trim(data) == "successSetAcount") alertify.success("Welcome, " + $("#register-last-name").val());
+                        else if($.trim(data) == "notfound") signin('login', 'Account not found, try again!');
+                        else if($.trim(data) == "loggedin") alertify.success("Welcome back, " + $("#register-last-name").val());
+                        else {
+                            alertify.error("Error...");
+                            likePost(postidtolike);
                         }
-                    });
-                }
-                else if(loginOption = "login") {
-                    $.ajax({
-                        type: "POST",
-                        url: "main.php",
-                        data: {
-                            message: "set-account",
-                            firstname: $("#register-first-name").val(),
-                            lastname: $("#register-last-name").val(),
-                            pin: $("#register-pin").val(),
-                            post: postidtolike
-                        },
-                        success: function(data) {
-                            if($.trim(data) == "true") {
-                                likePost(id);
-                                alertify.success("Welcome, " + $("#register-first-name").val());
-                            }
-                            else if($.trim(data) == "false") {
-                                alertify.message ("PIN taken").ondismiss = function() {
-                                    $("#register-pin").val() = "";
-                                    signin('signup', 'Choose a different PIN'); 
-                                }
-                            }
-                        }
-                    });
-                }
+                    }
+                });
             }
         },
         function() { //cancel
-            alertify.confirm.close(); 
-            alertify.message("Maybe Later...");
+            alertify.closeAll();
+            if(loginOption == "signup") signin('signup', 'Sign Up to like posts');
+            else if(loginOption == "login") signin('login', 'Login to like posts'); 
+            else alertify.error("Error...");
         }
     );
 }   
