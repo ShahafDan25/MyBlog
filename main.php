@@ -33,7 +33,7 @@
     }
 
     if($_POST['message'] == "movepage-manage-comments") {
-        echo populateManagementTable($_SESSION['postCountForManagement']);
+        echo populateManagementTable($_POST['goto']);
     }
 
     if($_POST['message'] == "get-add-blog-pw") {
@@ -512,9 +512,7 @@
         return $string;
     }
 
-    // TODO: Fix Time Stamos displayal
-    // TODO: UI SideBar change
-    // TODO: Add a login form
+    // TODO: Fix Time Stamps displayal
     // TODO: Display name of whoever is signed in
     // TODO: ReTweet Button, connect to twitter
     // TODO: Restyle the manage posts section so it has an upper bar too:

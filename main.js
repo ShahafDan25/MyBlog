@@ -115,8 +115,9 @@ function allow_edit(id) {
             commentid: id
         },
         success: function(data) {
+            document.getElementById("edit-comment-form-textarea").value = text;
+            alertify.minimalDialog(form).set('resizable',true).resizeTo('80%','60%'); // TODO: fix this
             text = data;
-            $("#edit-comment-form-textarea").val(text);
             alertify.confirm(
                 form, 
                 function() {
@@ -126,7 +127,7 @@ function allow_edit(id) {
                         data: {
                             message: "edit-comment",
                             commentid: id,
-                            comment: $("#edit-comment-form-textarea").val()
+                            comment: document.getElementById("edit-comment-form-textarea").value
                         },
                         success: function(data) {
                             if($.trim(data) == "error") alertify.error("Error...");
@@ -369,7 +370,7 @@ function managementMovePosts(direction) {
             else if($.trim(data) == "earliestPost") alertify.message("No Earliet Posts...");
             else $("#comments-to-manage").html(data);
         }
-    })
+    });
 }
 
 function movePosts(direction) {
