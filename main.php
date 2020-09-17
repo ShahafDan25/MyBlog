@@ -491,6 +491,8 @@
     }
 
     function tagRecognize($string) {
+        $sepChars = array(",", ".", "(", ")", ":", "!");
+
         $hashtags = array();
         if (preg_match_all('/#([^\s]+)/', $string, $hashtags)) {
             for($item = 0; $item < count($hashtags[1]); $item++) {

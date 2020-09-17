@@ -116,7 +116,7 @@ function allow_edit(id) {
         },
         success: function(data) {
             document.getElementById("edit-comment-form-textarea").value = text;
-            alertify.minimalDialog(form).set('resizable',true).resizeTo('80%','60%'); // TODO: fix this
+            alertify.minimalDialog(form).set('resizable',true).resizeTo('80%','60%'); // TODO: fix this\quit\quit
             text = data;
             alertify.confirm(
                 form, 
