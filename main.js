@@ -87,6 +87,7 @@ function deactiavte(id) {
     });
 }
 
+
 function activate(id){
     $.ajax({
         type: "POST",
